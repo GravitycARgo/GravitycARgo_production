@@ -384,9 +384,173 @@ document.addEventListener('DOMContentLoaded', function() {
       if (fileSize) fileSize.textContent = formatFileSize(file.size);
       if (dropZone) dropZone.classList.add('file-dropped');
       if (fileInfo) fileInfo.style.display = 'block';
+      
+      // Add CSV preview functionality
+      if (fileExt === '.csv') {
+        showCSVPreview(file);
+      } else {
+        // For Excel files, show a note that preview is not available
+        showFilePreviewNote('Excel file uploaded successfully. Preview available after processing.');
+      }
     } else {
       showError('Please upload a CSV or Excel file');
       if (fileInput) fileInput.value = '';
+    }
+  }
+  
+  function showCSVPreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const csvText = e.target.result;
+        const lines = csvText.split('\n').filter(line => line.trim());
+        
+        if (lines.length === 0) {
+          showFilePreviewNote('CSV file appears to be empty.');
+          return;
+        }
+        
+        // Parse first few rows
+        const maxPreviewRows = 6; // Header + 5 data rows
+        const previewLines = lines.slice(0, maxPreviewRows);
+        const csvData = previewLines.map(line => {
+          // Simple CSV parsing - handles basic cases
+          const values = [];
+          let current = '';
+          let inQuotes = false;
+          
+          for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+              inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+              values.push(current.trim());
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+          values.push(current.trim());
+          return values;
+        });
+        
+        createCSVPreviewTable(csvData, lines.length);
+      } catch (error) {
+        console.error('Error reading CSV:', error);
+        showFilePreviewNote('Error reading CSV file. Please check the file format.');
+      }
+    };
+    reader.readAsText(file);
+  }
+  
+  function createCSVPreviewTable(csvData, totalRows) {
+    // Remove existing preview
+    const existingPreview = document.getElementById('csvPreview');
+    if (existingPreview) {
+      existingPreview.remove();
+    }
+    
+    // Create preview container
+    const previewContainer = document.createElement('div');
+    previewContainer.id = 'csvPreview';
+    previewContainer.className = 'csv-preview-container mt-4';
+    previewContainer.innerHTML = `
+      <div class="csv-preview-header">
+        <h5><i class="fas fa-table text-primary"></i> CSV Preview</h5>
+        <p class="text-muted mb-3">Showing first 5 rows of ${totalRows} total rows</p>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-striped csv-preview-table">
+          <thead class="table-dark">
+            ${csvData.length > 0 ? '<tr>' + csvData[0].map(header => `<th>${header || 'Column'}</th>`).join('') + '</tr>' : ''}
+          </thead>
+          <tbody>
+            ${csvData.slice(1).map(row => 
+              '<tr>' + row.map(cell => `<td>${cell || ''}</td>`).join('') + '</tr>'
+            ).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+    
+    // Add CSS styles for the preview
+    if (!document.getElementById('csvPreviewStyles')) {
+      const styles = document.createElement('style');
+      styles.id = 'csvPreviewStyles';
+      styles.textContent = `
+        .csv-preview-container {
+          background: #f8f9fa;
+          border: 1px solid #dee2e6;
+          border-radius: 8px;
+          padding: 20px;
+          margin-top: 20px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .csv-preview-header h5 {
+          color: #495057;
+          margin-bottom: 5px;
+        }
+        .csv-preview-table {
+          background: white;
+          border-radius: 6px;
+          overflow: hidden;
+          font-size: 0.85rem;
+        }
+        .csv-preview-table th {
+          background: #343a40 !important;
+          color: white;
+          font-weight: 600;
+          border: none;
+          padding: 12px 8px;
+        }
+        .csv-preview-table td {
+          padding: 8px;
+          border-color: #dee2e6;
+          max-width: 150px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .csv-preview-table tbody tr:hover {
+          background-color: #f1f3f4;
+        }
+      `;
+      document.head.appendChild(styles);
+    }
+    
+    // Insert preview at the bottom of the page
+    const formSection = document.querySelector('.form-section.active') || document.querySelector('#step2');
+    if (formSection) {
+      formSection.appendChild(previewContainer);
+    } else {
+      // Fallback: append to the file info area
+      const fileInfoArea = document.getElementById('file-info');
+      if (fileInfoArea && fileInfoArea.parentNode) {
+        fileInfoArea.parentNode.appendChild(previewContainer);
+      }
+    }
+  }
+  
+  function showFilePreviewNote(message) {
+    // Remove existing preview
+    const existingPreview = document.getElementById('csvPreview');
+    if (existingPreview) {
+      existingPreview.remove();
+    }
+    
+    const noteContainer = document.createElement('div');
+    noteContainer.id = 'csvPreview';
+    noteContainer.className = 'csv-preview-container mt-4';
+    noteContainer.innerHTML = `
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> ${message}
+      </div>
+    `;
+    
+    // Insert at the bottom of the page
+    const formSection = document.querySelector('.form-section.active') || document.querySelector('#step2');
+    if (formSection) {
+      formSection.appendChild(noteContainer);
     }
   }
   
@@ -403,6 +567,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (fileInput) fileInput.value = '';
       if (dropZone) dropZone.classList.remove('file-dropped');
       if (fileInfo) fileInfo.style.display = 'none';
+      
+      // Remove CSV preview when file is removed
+      const csvPreview = document.getElementById('csvPreview');
+      if (csvPreview) {
+        csvPreview.remove();
+      }
     });
   }
 

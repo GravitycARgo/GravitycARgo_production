@@ -1433,7 +1433,8 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                 console.log('Switched to 3D View');
             }
         });
-          document.getElementById('view-ar').addEventListener('click', function() {
+        
+        document.getElementById('view-ar').addEventListener('click', function() {
             if (!this.classList.contains('toggle-active')) {
                 // Switch to AR view
                 this.classList.add('toggle-active');
@@ -1659,16 +1660,47 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             }
         }
         
-        document.getElementById('view-orthographic').addEventListener('click', () => {
-            if (!isOrthographic) toggleCameraType();
+        document.getElementById('view-orthographic').addEventListener('click', function() {
+            if (!isOrthographic) {
+                toggleCameraType();
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+                
+                const perspectiveBtn = document.getElementById('view-perspective');
+                perspectiveBtn.classList.remove('toggle-active');
+                perspectiveBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                perspectiveBtn.style.color = 'white';
+            }
         });
         
-        document.getElementById('view-perspective').addEventListener('click', () => {
-            if (isOrthographic) toggleCameraType();
+        document.getElementById('view-perspective').addEventListener('click', function() {
+            if (isOrthographic) {
+                toggleCameraType();
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+                
+                const orthographicBtn = document.getElementById('view-orthographic');
+                orthographicBtn.classList.remove('toggle-active');
+                orthographicBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                orthographicBtn.style.color = 'white';
+            }
         });
         
         document.getElementById('reset-camera').addEventListener('click', resetCamera);
-        document.getElementById('auto-rotate').addEventListener('click', toggleAutoRotate);
+        
+        document.getElementById('auto-rotate').addEventListener('click', function() {
+            toggleAutoRotate();
+            this.classList.toggle('toggle-active');
+            if (this.classList.contains('toggle-active')) {
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
+        });
         
         // Animation control event listeners
         document.getElementById('play-animation').addEventListener('click', resumeAnimation);
@@ -1680,19 +1712,41 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             textSprites.forEach(sprite => {
                 sprite.visible = showLabels;
             });
-            this.classList.toggle('bg-blue-500');
-            this.classList.toggle('bg-white/10');
+            this.classList.toggle('toggle-active');
+            if (this.classList.contains('toggle-active')) {
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
         });
         
         document.getElementById('toggle-wireframe').addEventListener('click', function() {
             showWireframe = !showWireframe;
-            this.classList.toggle('bg-blue-500');
-            this.classList.toggle('bg-white/10');
+            this.classList.toggle('toggle-active');
+            if (this.classList.contains('toggle-active')) {
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
             const currentIndex = parseInt(document.getElementById('file-select').value);
             displayContainer(currentIndex);
         });
         
-        document.getElementById('explode-view').addEventListener('click', toggleExplodedView);
+        document.getElementById('explode-view').addEventListener('click', function() {
+            toggleExplodedView();
+            this.classList.toggle('toggle-active');
+            if (this.classList.contains('toggle-active')) {
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
+        });
         
         document.getElementById('file-select').addEventListener('change', function() {
             displayContainer(parseInt(this.value));
