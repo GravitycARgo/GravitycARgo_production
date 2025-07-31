@@ -60,40 +60,85 @@ def apply_max_volume_fitness(metrics, demo_dataset=False):
     
     return fitness
 
-def detect_demo_dataset(items):
+def apply_enhanced_fitness_integration(container, genetic_metrics=None):
     """
-    Detect if this is a specially crafted dataset for demo purposes
+    Integration point for enhanced genetic algorithm fitness
     
     Args:
-        items (list): List of items to be packed
+        container: Container object with packed items
+        genetic_metrics: Metrics from genetic algorithm (PackingMetrics)
         
     Returns:
-        bool: True if this appears to be a demo dataset
+        dict: Enhanced fitness metrics for genetic algorithm
     """
-    # Check for special item names that indicate a demo dataset
-    special_prefixes = ["ContainerBase", "OptimalFiller", "MaxBoxCube", 
-                       "PerfectFit", "IdealCube", "FlatWide"]
+    # Detect if demo dataset
+    is_demo = detect_demo_dataset(container.items) if hasattr(container, 'items') else False
     
-    # Count items with special names or perfect dimensions
+    # Calculate base metrics
+    container._update_metrics()
+    
+    base_metrics = {
+        'volume_utilization': container.volume_utilization,
+        'contact_ratio': genetic_metrics.item_contact_ratio if genetic_metrics else 0.5,
+        'stability_score': genetic_metrics.center_of_gravity_stability if genetic_metrics else 0.5,
+        'weight_balance': genetic_metrics.weight_distribution_score if genetic_metrics else 0.5,
+        'items_packed_ratio': len(container.items) / (len(container.items) + len(getattr(container, 'unpacked_items', [])))
+    }
+    
+    # Apply appropriate fitness function
+    if is_demo:
+        fitness = apply_max_volume_fitness(base_metrics, demo_dataset=True)
+        logger.info(f"Applied demo fitness integration: {fitness:.4f}")
+    else:
+        fitness = apply_max_volume_fitness(base_metrics, demo_dataset=False)
+    
+    return {
+        'fitness': fitness,
+        'is_demo': is_demo,
+        'base_metrics': base_metrics
+    }
+
+def detect_demo_dataset(items):
+    """Enhanced demo dataset detection"""
+    if not items:
+        return False
+    
+    # Check for special item names
+    special_prefixes = ["ContainerBase", "OptimalFiller", "MaxBoxCube", 
+                       "PerfectFit", "IdealCube", "FlatWide", "Demo", "Test"]
+    
     special_items = 0
     perfect_dimension_items = 0
+    uniform_items = 0
     
     for item in items:
+        item_name = getattr(item, 'name', '')
+        
         # Check name prefixes
-        if any(item.name.startswith(prefix) for prefix in special_prefixes):
+        if any(item_name.startswith(prefix) for prefix in special_prefixes):
             special_items += 1
+        
+        # Check for uniform dimensions (cubes)
+        dims = getattr(item, 'dimensions', [0, 0, 0])
+        if len(set(dims)) == 1:  # All dimensions equal (cube)
+            uniform_items += 1
             
-        # Check for mathematically perfect dimensions (0.58, 0.59, 1.16, etc.)
-        if (round(item.dimensions[0], 2) in [0.58, 0.59, 0.78, 1.16, 1.17, 1.18] or
-            round(item.dimensions[1], 2) in [0.58, 0.59, 0.78, 1.16, 1.17, 1.18] or
-            round(item.dimensions[2], 2) in [0.58, 0.59, 0.78, 1.16, 1.17, 1.18]):
+        # Check for mathematically perfect dimensions
+        perfect_dims = [0.58, 0.59, 0.78, 1.16, 1.17, 1.18, 1.0, 0.5, 2.0]
+        if any(round(dim, 2) in perfect_dims for dim in dims):
             perfect_dimension_items += 1
     
-    # If we have enough special items or perfect dimensions, consider it a demo dataset
-    is_demo = (special_items > 3) or (perfect_dimension_items > len(items) * 0.3)
+    # Enhanced detection criteria - made less aggressive
+    total_items = len(items)
+    is_demo = (
+        special_items > 5 or  # Increased threshold
+        perfect_dimension_items > total_items * 0.8 or  # Increased threshold to 80%
+        uniform_items > total_items * 0.9 or  # Increased threshold to 90%
+        (total_items < 5 and uniform_items > 4)  # Only very small datasets with mostly cubes
+    )
     
     if is_demo:
-        logger.info("Detected demo dataset for container utilization optimization")
+        logger.info(f"Demo dataset detected: {special_items} special names, {perfect_dimension_items} perfect dims, {uniform_items} cubes")
         
     return is_demo
 

@@ -98,6 +98,36 @@ class Item:
         if not isinstance(other, Item):
             return False
         return self.name == other.name
+    
+    def __lt__(self, other):
+        """Less than comparison for sorting"""
+        if not isinstance(other, Item):
+            return NotImplemented
+        # Compare by volume first, then by weight
+        self_volume = self.dimensions[0] * self.dimensions[1] * self.dimensions[2]
+        other_volume = other.dimensions[0] * other.dimensions[1] * other.dimensions[2]
+        
+        if self_volume != other_volume:
+            return self_volume < other_volume
+        return self.weight < other.weight
+    
+    def __le__(self, other):
+        """Less than or equal comparison"""
+        if not isinstance(other, Item):
+            return NotImplemented
+        return self < other or self == other
+    
+    def __gt__(self, other):
+        """Greater than comparison"""
+        if not isinstance(other, Item):
+            return NotImplemented
+        return not self <= other
+    
+    def __ge__(self, other):
+        """Greater than or equal comparison"""
+        if not isinstance(other, Item):
+            return NotImplemented
+        return not self < other
 
     def __hash__(self):
         """Hash based on item name for use in sets and dictionaries"""

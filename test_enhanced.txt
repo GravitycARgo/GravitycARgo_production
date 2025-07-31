@@ -1,0 +1,56 @@
+20:05:24 [INFO] ======================================================================
+20:05:24 [INFO] AI-ENHANCED GENETIC PACKER MODULE LOADED
+20:05:24 [INFO] ======================================================================
+20:05:24 [INFO] ======================================================================
+20:05:24 [INFO] GENETIC ALGORITHM MODULE LOADED WITH LLM INTEGRATION
+20:05:24 [INFO] ======================================================================
+20:05:24 [INFO] ==================================================
+20:05:24 [INFO] QUANTITY EXPANSION SUMMARY:
+20:05:24 [INFO]   CSV rows processed: 3
+20:05:24 [INFO]   Total raw quantity: 3 pieces
+20:05:24 [INFO]   Bundled items (kept as bundles): 0
+20:05:24 [INFO]   Non-bundled items (expanded): 3
+20:05:24 [INFO]   Expected packable items: 3
+20:05:24 [INFO]   Actual packable items: 3
+20:05:24 [INFO]   \u2705 EXPANSION SUCCESS: Counts match!
+20:05:24 [INFO] ==================================================
+20:05:24 [INFO] No temperature-sensitive items found at 25.0°C
+20:05:24 [INFO] Item analysis complete: 3 items analyzed in 0.00s
+20:05:24 [INFO] Created population with strategies: {'temperature_optimized', 'corner_fill', 'density_based', 'rotation_optimized', 'volume_weight_combined', 'smart_variant', 'fragility_aware', 'layered_packing'}
+20:05:24 [INFO] Intelligent population created: 10 genomes
+20:05:24 [INFO] Gen 0: Best=0.2572, Time=0.01s, MutRate=0.150
+20:05:24 [INFO] Gen 3: Best=0.2572, Time=0.00s, MutRate=0.150
+20:05:24 [INFO] Optimization complete in 0.02s - Best fitness: 0.2572
+20:05:24 [INFO] Container dimensions: (5.0, 3.0, 3.0)
+20:05:24 [INFO] Container volume: 45.00 m³
+20:05:24 [INFO] Number of items to pack: 3
+20:05:24 [INFO] Demo dataset detected: 0 special names, 3 perfect dims, 1 cubes
+20:05:24 [INFO] Attempting enhanced packing with space management...
+20:05:24 [INFO] Trying to pack item 1: Box2, dims: (2.0, 1.0, 1.0)
+20:05:24 [INFO]   Found position: (0, 0, 0)
+20:05:24 [INFO]   \u2705 Successfully packed item Box2
+20:05:24 [INFO] Trying to pack item 2: Box1, dims: (1.0, 1.0, 1.0)
+20:05:24 [INFO]   Found position: (0.1, 0.1, 0)
+20:05:24 [INFO]   \u274c Invalid placement for Box1
+20:05:24 [INFO] Trying to pack item 3: Box3, dims: (1.5, 1.5, 0.5)
+20:05:24 [INFO]   Found position: (0.1, 0.1, 0)
+20:05:24 [INFO]   \u274c Invalid placement for Box3
+20:05:24 [INFO] Enhanced packing complete - 1 items packed, 2 failed
+20:05:24 [INFO] Enhanced packing performed poorly. Trying simple grid packing...
+20:05:24 [INFO] Starting enhanced simple grid packing for 3 items
+20:05:24 [INFO] Enhanced simple packing: 3/3 items packed (100.0%)
+20:05:24 [INFO] Simple packing result: 3 items packed
+20:05:24 [INFO] Simple packing was better (3 vs 1). Using simple packing.
+20:05:24 [INFO] Applied demo dataset fitness function: base=0.17
+20:05:24 [INFO] Demo dataset detected - enhanced fitness: 0.1685
+\n==================================================
+[OK] LLM Connector initialized with Gemini AI
+Model: Gemini 2.5 Flash-Lite Preview 06-17
+==================================================\n
+Testing LLM-enhanced genetic algorithm...
+Items: 3
+Container: (5.0, 3.0, 3.0)
+LLM Client: Using ROUTE_TEMPERATURE=25.0°C
+SUCCESS! Optimization completed.
+   Items packed: 3
+   Volume utilization: 9.17%

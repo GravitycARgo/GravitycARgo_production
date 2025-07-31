@@ -30,15 +30,18 @@ class ContainerReporting:
             },
             "packed_items": [
                 {
-                    "name": item.name,
-                    "position": item.position,
-                    "dimensions": item.dimensions,
-                    "original_dims": item.original_dims,
-                    "weight": item.weight,
-                    "quantity": item.quantity,
-                    "fragility": item.fragility,
-                    "stackable": item.stackable,
-                    "bundle": item.bundle
+                    "name": getattr(item, 'name', getattr(item, 'item_id', 'unknown')),
+                    "position": getattr(item, 'position', [0.0, 0.0, 0.0]),
+                    "dimensions": getattr(item, 'dimensions', getattr(item, 'original_dims', [0.0, 0.0, 0.0])),
+                    "original_dims": getattr(item, 'original_dims', getattr(item, 'dimensions', [0.0, 0.0, 0.0])),
+                    "weight": getattr(item, 'weight', 1.0),
+                    "quantity": getattr(item, 'quantity', 1),
+                    "fragility": getattr(item, 'fragility', 'LOW'),
+                    "stackable": getattr(item, 'stackable', True),
+                    "bundle": getattr(item, 'bundle', False),
+                    "needs_insulation": getattr(item, 'needs_insulation', False),
+                    "temperature_sensitivity": getattr(item, 'temperature_sensitivity', None),
+                    "item_id": getattr(item, 'item_id', getattr(item, 'name', 'unknown'))
                 }
                 for item in self.items
             ],
@@ -46,8 +49,8 @@ class ContainerReporting:
                 {
                     "name": name,
                     "reason": reason,
-                    "dimensions": item.dimensions,
-                    "weight": item.weight
+                    "dimensions": getattr(item, 'dimensions', getattr(item, 'original_dims', [0.0, 0.0, 0.0])),
+                    "weight": getattr(item, 'weight', 1.0)
                 }
                 for name, (reason, item) in self.unpacked_reasons.items()
             ],

@@ -1,0 +1,177 @@
+et Mode: Starting connection...
+ * Serving Flask app 'app_modular' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+WARNING:werkzeug: * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+INFO:werkzeug: * Running on http://192.168.1.46:5000/ (Press CTRL+C to quit)
+INFO:slack_bolt.App:A new session has been established (session id: 81a49563-8a87-4f52-8320-4b63a630f287)
+INFO:slack_bolt.App:Bolt app is running!
+⚠️ Socket Mode signal handling issue (non-critical)
+INFO:slack_bolt.App:Starting to receive messages from a new connection (session id: 81a49563-8a87-4f52-8320-4b63a630f287)
+INFO:app_modular:=== OPTIMIZE ROUTE CALLED ===
+INFO:app_modular:Request form keys: ['transport_mode', 'container_type', 'length', 'width', 'height', 'route_temperature', 'volume_weight', 'stability_weight', 'contact_weight', 'balance_weight', 'items_packed_weight', 'temperature_weight', 'weight_capacity', 'optimization_mode', 'optimization_algorithm', 'population_size', 'num_generations']
+INFO:app_modular:Request files: ['file']
+INFO:app_modular:Received - Transport mode: 1, Container type: Forty-foot
+INFO:app_modular:Container info: {'type': 'Forty-foot', 'transport_mode': 'Road Transport', 'transport_mode_id': '1'}
+INFO:app_modular:Predefined container 'Forty-foot' dimensions: [12.03, 2.35, 2.39]
+INFO:app_modular:Final container dimensions: [12.03, 2.35, 2.39]    
+INFO:app_modular:File saved at: D:\PROJECTS\GravitycARgo_production\uploads\inventory_data_utf8.csv
+INFO:app_modular:File loaded with 20 rows
+INFO:app_modular:Using stackable column: None, temperature sensitivity column: Temperature Sensitivity
+INFO:app_modular:Using route temperature: 28.0°C
+INFO:app_modular:Set ROUTE_TEMPERATURE=28.0 environment variable    
+INFO:app_modular:Dataset contains 64 total items
+INFO:app_modular:Successfully created 20 Item objects for packing.
+INFO:app_modular:Using population size: 75
+INFO:app_modular:Using number of generations: 30
+INFO:app_modular:Normalized constraint weights: {
+  "volume_utilization_weight": 0.2459016393442623,
+  "stability_score_weight": 0.16393442622950818,
+  "contact_ratio_weight": 0.16393442622950818,
+  "weight_balance_weight": 0.08196721311475409,
+  "items_packed_ratio_weight": 0.08196721311475409,
+  "temperature_constraint_weight": 0.09836065573770492,
+  "weight_capacity_weight": 0.16393442622950818
+}
+INFO:app_modular:Using AI Enhanced Genetic Algorithm
+INFO:genetic:Expanding non-bundled item StandardPallet1 with quantity 2
+INFO:genetic:Expanding non-bundled item ElectronicCabinet with quantity 2
+INFO:genetic:Expanding non-bundled item StorageBox with quantity 4  
+INFO:genetic:Expanding non-bundled item IndustrialPump with quantity 2
+INFO:genetic:Expanding non-bundled item SteelDrums with quantity 3  
+INFO:genetic:Expanding non-bundled item CardboardBoxes with quantity 6
+INFO:genetic:Expanding non-bundled item WoodCrates with quantity 2
+INFO:genetic:Expanding non-bundled item PlasticContainers with quantity 3
+INFO:genetic:Expanding non-bundled item MachineParts with quantity 2
+INFO:genetic:Expanding non-bundled item ToolBoxes with quantity 4   
+INFO:genetic:Expanding non-bundled item PackagedGoods with quantity 6
+INFO:genetic:Expanding non-bundled item IndustrialFans with quantity 3
+INFO:genetic:Expanding non-bundled item MetalFrames with quantity 2 
+INFO:genetic:Expanding non-bundled item SafetyEquipment with quantity 3
+INFO:genetic:Expanding non-bundled item ChemicalBarrels with quantity 2
+INFO:genetic:Expanding non-bundled item AutoParts with quantity 3   
+INFO:genetic:Expanding non-bundled item PackagingSupplies with quantity 4
+INFO:genetic:Expanding non-bundled item ElectricalBoxes with quantity 4
+INFO:genetic:Expanding non-bundled item LightFixtures with quantity 6
+INFO:genetic:==================================================     
+INFO:genetic:QUANTITY EXPANSION SUMMARY:
+INFO:genetic:  CSV rows processed: 20
+INFO:genetic:  Total raw quantity: 64 pieces
+INFO:genetic:  Bundled items (kept as bundles): 0
+INFO:genetic:  Non-bundled items (expanded): 0
+INFO:genetic:  Expected packable items: 0
+INFO:genetic:  Actual packable items: 64
+WARNING:genetic:  ❌ EXPANSION MISMATCH: Expected 0, got 64
+INFO:genetic:==================================================     
+LLM Client: Using ROUTE_TEMPERATURE=28.0°C
+INFO:genetic:No temperature-sensitive items found at 28.0°C
+INFO:genetic:Item analysis complete: 64 items analyzed in 0.00s
+INFO:genetic:Created population with strategies: {'density_based', 'fragility_aware', 'volume_weight_combined', 'corner_fill', 'smart_variant', 'rotation_optimized', 'temperature_optimized', 'layered_packing'}
+INFO:genetic:Intelligent population created: 75 genomes
+INFO:genetic:Gen 0: Best=0.2221, Time=0.29s, MutRate=0.150
+INFO:genetic:Gen 3: Best=0.2221, Time=0.26s, MutRate=0.150
+INFO:genetic:Gen 6: Best=0.2221, Time=0.44s, MutRate=0.150
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.180
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.216
+INFO:genetic:Gen 9: Best=0.2221, Time=0.19s, MutRate=0.216
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.259
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 12: Best=0.2221, Time=0.18s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 15: Best=0.2221, Time=0.17s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 18: Best=0.2221, Time=0.18s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 21: Best=0.2221, Time=0.21s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 24: Best=0.2221, Time=0.16s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Gen 27: Best=0.2221, Time=0.21s, MutRate=0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Stagnation detected. Increased mutation rate to 0.300
+INFO:genetic:Optimization complete in 6.16s - Best fitness: 0.2221
+INFO:genetic:Container dimensions: [12.03, 2.35, 2.39]
+INFO:genetic:Container volume: 67.57 m³
+INFO:genetic:Number of items to pack: 64
+INFO:genetic:Attempting enhanced packing with space management...   
+INFO:genetic:Trying to pack item 1: HeavyMachinery, dims: (1.5, 1.8, 2.0)
+INFO:genetic:  Found position: (0, 0, 0)
+INFO:genetic:  ✅ Successfully packed item HeavyMachinery
+INFO:genetic:Trying to pack item 2: StandardPallet1_1, dims: (1.0, 1.2, 1.2)
+INFO:genetic:    Finding position for StandardPallet1_1: 2 spaces, 2 can fit item
+INFO:genetic:  Found position: (0.1, 0.1, 0)
+INFO:genetic:  ❌ Invalid placement for StandardPallet1_1
+INFO:genetic:Trying to pack item 3: StandardPallet1_2, dims: (1.0, 1.2, 1.2)
+INFO:genetic:    Finding position for StandardPallet1_2: 2 spaces, 2 can fit item
+INFO:genetic:  Found position: (0.1, 0.1, 0)
+INFO:genetic:  ❌ Invalid placement for StandardPallet1_2
+INFO:genetic:    Finding position for MachineParts_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for MachineParts_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for IndustrialPump_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for IndustrialPump_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ChemicalBarrels_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ChemicalBarrels_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for MetalFrames_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for MetalFrames_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for WoodCrates_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for WoodCrates_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ElectronicCabinet_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ElectronicCabinet_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for SteelDrums_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for SteelDrums_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for AutoParts_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for AutoParts_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for IndustrialFans_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for IndustrialFans_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for StorageBox_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for StorageBox_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PlasticContainers_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PlasticContainers_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PackagingSupplies_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PackagingSupplies_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for SafetyEquipment_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for SafetyEquipment_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ToolBoxes_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ToolBoxes_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ElectricalBoxes_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for ElectricalBoxes_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PackagedGoods_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for PackagedGoods_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for CardboardBoxes_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for CardboardBoxes_2: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for LightFixtures_1: 2 spaces, 2 can fit item
+INFO:genetic:    Finding position for LightFixtures_2: 2 spaces, 2 can fit item
+INFO:genetic:Enhanced packing complete - 1 items packed, 63 failed  
+INFO:genetic:Enhanced packing performed poorly. Trying simple grid packing...
+INFO:genetic:Starting enhanced simple grid packing for 64 items     
+INFO:genetic:Enhanced simple packing: 64/64 items packed (100.0%)
+INFO:genetic:Simple packing result: 64 items packed
+INFO:genetic:Simple packing was better (64 vs 1). Using simple packing.
+INFO:app_modular:Packing complete - 64 items packed into the container.
+INFO:app_modular:Genetic Algorithm Results:
+INFO:app_modular:  CSV rows processed: 20
+INFO:app_modular:  Total raw quantity: 64 pieces
+INFO:app_modular:  After bundling logic: 10 bundles + 23 individuals = 64 items
+INFO:app_modular:  Packed: 64, Unpacked: 63
+INFO:app_modular:  Success rate: 64/64 = 100.0%
+INFO:app_modular:Container plan saved to D:\PROJECTS\GravitycARgo_production\container_plans\container_plan_20250730_204356.json        
+INFO:app_modular:Creating visualization
+INFO:app_modular:Calculated category counts: {'CRATE': 15, 'PALLET': 6, 'FRAME': 2, 'CARTON': 16, 'DRUM': 5, 'BOX':  'PALLET': 6, 'FRAME': 2, 'CARTON': 16, 'DRUM': 5, 'BOX': 20}
+INFO:app_modular:Starting standalone_visualization.py...  
+INFO:app_modular:standalone_visualization.py started successfully
+WARNING:app_modular:Error sending professional Slack notification: No module named 'professional_slack_notifier'    
+INFO:werkzeug:192.168.1.46 - - [30/Jul/2025 20:43:57] "POST /optimize HTTP/1.1" 200 -

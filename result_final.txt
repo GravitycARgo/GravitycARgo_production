@@ -1,0 +1,101 @@
+20:17:45 [INFO] ======================================================================
+20:17:45 [INFO] AI-ENHANCED GENETIC PACKER MODULE LOADED
+20:17:45 [INFO] ======================================================================
+20:17:45 [INFO] ======================================================================
+20:17:45 [INFO] GENETIC ALGORITHM MODULE LOADED WITH LLM INTEGRATION
+20:17:45 [INFO] ======================================================================
+20:17:45 [INFO] ==================================================
+20:17:45 [INFO] QUANTITY EXPANSION SUMMARY:
+20:17:45 [INFO]   CSV rows processed: 30
+20:17:45 [INFO]   Total raw quantity: 30 pieces
+20:17:45 [INFO]   Bundled items (kept as bundles): 0
+20:17:45 [INFO]   Non-bundled items (expanded): 0
+20:17:45 [INFO]   Expected packable items: 0
+20:17:45 [INFO]   Actual packable items: 30
+20:17:45 [WARNING]   \u274c EXPANSION MISMATCH: Expected 0, got 30
+20:17:45 [INFO] ==================================================
+20:17:45 [INFO] No temperature-sensitive items found at 25.0°C
+20:17:45 [INFO] Item analysis complete: 30 items analyzed in 0.00s
+20:17:45 [INFO] Created population with strategies: {'fragility_aware', 'volume_weight_combined', 'density_based', 'corner_fill', 'layered_packing', 'smart_variant', 'rotation_optimized', 'temperature_optimized'}
+20:17:45 [INFO] Intelligent population created: 50 genomes
+20:17:45 [INFO] Gen 0: Best=0.2256, Time=0.07s, MutRate=0.150
+20:17:46 [INFO] Gen 3: Best=0.2256, Time=0.06s, MutRate=0.150
+20:17:46 [INFO] Gen 6: Best=0.2256, Time=0.05s, MutRate=0.150
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.180
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.216
+20:17:46 [INFO] Gen 9: Best=0.2256, Time=0.05s, MutRate=0.216
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.259
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Gen 12: Best=0.2256, Time=0.05s, MutRate=0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Gen 15: Best=0.2256, Time=0.07s, MutRate=0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Gen 18: Best=0.2256, Time=0.04s, MutRate=0.300
+20:17:46 [INFO] Stagnation detected. Increased mutation rate to 0.300
+20:17:46 [INFO] Optimization complete in 1.12s - Best fitness: 0.2256
+20:17:46 [INFO] Container dimensions: (12.03, 2.35, 2.39)
+20:17:46 [INFO] Container volume: 67.57 m³
+20:17:46 [INFO] Number of items to pack: 30
+20:17:46 [INFO] Attempting enhanced packing with space management...
+20:17:46 [INFO] Trying to pack item 1: HeavyMachinery, dims: (1.8, 1.5, 2.0)
+20:17:46 [INFO]   Found position: (0, 0, 0)
+20:17:46 [INFO]   \u2705 Successfully packed item HeavyMachinery
+20:17:46 [INFO] Trying to pack item 2: SteelDrums_1, dims: (0.6, 0.6, 0.9)
+20:17:46 [INFO]     Finding position for SteelDrums_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]   Found position: (0.1, 0.1, 0)
+20:17:46 [INFO]   \u274c Invalid placement for SteelDrums_1
+20:17:46 [INFO] Trying to pack item 3: SteelDrums_2, dims: (0.6, 0.6, 0.9)
+20:17:46 [INFO]     Finding position for SteelDrums_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]   Found position: (0.1, 0.1, 0)
+20:17:46 [INFO]   \u274c Invalid placement for SteelDrums_2
+20:17:46 [INFO]     Finding position for IndustrialPump_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for IndustrialPump_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for StandardPallet_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for StandardPallet_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for ElectronicCabinet_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for ElectronicCabinet_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for WoodCrates_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for WoodCrates_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for StorageBox_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for StorageBox_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for MiscItem_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for MiscItem_2: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for CardboardBoxes_1: 2 spaces, 2 can fit item
+20:17:46 [INFO]     Finding position for CardboardBoxes_2: 2 spaces, 2 can fit item
+20:17:46 [INFO] Enhanced packing complete - 1 items packed, 29 failed
+20:17:46 [INFO] Enhanced packing performed poorly. Trying simple grid packing...
+20:17:46 [INFO] Starting enhanced simple grid packing for 30 items
+20:17:48 [INFO] Enhanced simple packing: 30/30 items packed (100.0%)
+20:17:48 [INFO] Simple packing result: 30 items packed
+20:17:48 [INFO] Simple packing was better (30 vs 1). Using simple packing.
+\n==================================================
+[OK] LLM Connector initialized with Gemini AI
+Model: Gemini 2.5 Flash-Lite Preview 06-17
+==================================================\n
+Testing enhanced genetic algorithm with realistic dataset...
+
+[TEMP] CONTAINER INITIALIZED WITH TEMPERATURE SYSTEM
+   Route temperature: 25.0°C
+   Temperature-sensitive items will use temperature-safe spaces
+   Wall buffer: 10.0cm from all container walls
+   Available space for temperature-sensitive items: 11.83m × 2.29m × 2.15m
+
+Created 30 items for testing
+LLM Client: Using ROUTE_TEMPERATURE=25.0°C
+
+=== RESULTS ===
+Optimization time: 2.55s
+Items packed: 30/30
+Success rate: 100.0%
+Volume utilization: 25.4%
+Traceback (most recent call last):
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 100, in <module>
+    test_realistic_packing()
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 87, in test_realistic_packing
+    print(f"Best fitness: {result.best_fitness:.4f}")
+AttributeError: 'EnhancedContainer' object has no attribute 'best_fitness'

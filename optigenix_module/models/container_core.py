@@ -336,3 +336,34 @@ class ContainerCore:
         
         # Weight position variance more heavily as it's more important for packing
         return (dim_score * 0.3 + pos_score * 0.7) / (self.dimensions[0] * self.dimensions[1] * self.dimensions[2])
+    
+    def _has_item_at_position(self, position, item_dimensions):
+        """Check if there's an item at or near the given position
+        
+        Args:
+            position: Tuple of (x, y, z) coordinates to check
+            item_dimensions: Tuple of (width, depth, height) for overlap checking
+            
+        Returns:
+            bool: True if an item exists at or overlaps with the given position
+        """
+        x, y, z = position
+        w, d, h = item_dimensions
+        
+        # Check if any existing item overlaps with the position and dimensions
+        for item in self.items:
+            if not item.position:
+                continue
+                
+            item_x, item_y, item_z = item.position
+            item_w, item_d, item_h = item.dimensions
+            
+            # Check for 3D overlap
+            x_overlap = (x < item_x + item_w) and (x + w > item_x)
+            y_overlap = (y < item_y + item_d) and (y + d > item_y)
+            z_overlap = (z < item_z + item_h) and (z + h > item_z)
+            
+            if x_overlap and y_overlap and z_overlap:
+                return True
+                
+        return False

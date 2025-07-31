@@ -1,0 +1,21 @@
+20:10:05 [INFO] ======================================================================
+20:10:05 [INFO] AI-ENHANCED GENETIC PACKER MODULE LOADED
+20:10:05 [INFO] ======================================================================
+20:10:05 [INFO] ======================================================================
+20:10:05 [INFO] GENETIC ALGORITHM MODULE LOADED WITH LLM INTEGRATION
+20:10:05 [INFO] ======================================================================
+\n==================================================
+[OK] LLM Connector initialized with Gemini AI
+Model: Gemini 2.5 Flash-Lite Preview 06-17
+==================================================\n
+Testing enhanced genetic algorithm with realistic dataset...
+Traceback (most recent call last):
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 102, in <module>
+    test_realistic_packing()
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 56, in test_realistic_packing
+    container = EnhancedContainer(container_dims, route_temperature=25.0)
+  File "D:\PROJECTS\GravitycARgo_production\optigenix_module\models\container.py", line 84, in __init__
+    print(f"\n\U0001f321\ufe0f CONTAINER INITIALIZED WITH TEMPERATURE SYSTEM")
+  File "C:\Users\DINESHKUMAR C\AppData\Local\Programs\Python\Python39\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 2-3: character maps to <undefined>

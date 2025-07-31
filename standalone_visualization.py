@@ -768,6 +768,7 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                 boxData.mesh.material.color.setHex(boxData.originalColor);
                 boxData.mesh.material.opacity = 0.9;
                 boxData.mesh.scale.set(1, 1, 1);
+                boxData.mesh.rotation.y = 0; // Reset any rotation
                 document.getElementById('box-info').style.opacity = "0";
             }
             hoveredBox = null;
@@ -1736,11 +1737,8 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             requestAnimationFrame(animate);
             controls.update();
             
-            if (hoveredBox && boxDataMap.has(hoveredBox)) {
-                const boxData = boxDataMap.get(hoveredBox);
-                const time = Date.now() * 0.005;
-                boxData.mesh.rotation.y = Math.sin(time) * 0.1;
-            }
+            // Removed shaking rotation animation for hovered boxes
+            // The hover effect now only includes color change, opacity, and scale
             
             renderer.render(scene, camera);
         }

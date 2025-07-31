@@ -1,0 +1,25 @@
+20:12:52 [INFO] ======================================================================
+20:12:52 [INFO] AI-ENHANCED GENETIC PACKER MODULE LOADED
+20:12:52 [INFO] ======================================================================
+20:12:52 [INFO] ======================================================================
+20:12:52 [INFO] GENETIC ALGORITHM MODULE LOADED WITH LLM INTEGRATION
+20:12:52 [INFO] ======================================================================
+\n==================================================
+[OK] LLM Connector initialized with Gemini AI
+Model: Gemini 2.5 Flash-Lite Preview 06-17
+==================================================\n
+Testing enhanced genetic algorithm with realistic dataset...
+
+[TEMP] CONTAINER INITIALIZED WITH TEMPERATURE SYSTEM
+   Route temperature: 25.0°C
+   Temperature-sensitive items will use temperature-safe spaces
+   Wall buffer: 10.0cm from all container walls
+   Available space for temperature-sensitive items: 11.83m × 2.29m × 2.15m
+
+Created 30 items for testing
+Traceback (most recent call last):
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 107, in <module>
+    test_realistic_packing()
+  File "D:\PROJECTS\GravitycARgo_production\test_realistic_packing.py", line 71, in test_realistic_packing
+    result = packer.run_enhanced_genetic_algorithm(
+AttributeError: 'EnhancedGeneticPacker' object has no attribute 'run_enhanced_genetic_algorithm'

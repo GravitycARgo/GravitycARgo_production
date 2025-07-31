@@ -81,10 +81,15 @@ class EnhancedContainer(ContainerCore, ContainerMetrics, ContainerPacking,
         self.support_mechanisms = []  # Track support mechanisms used
         
         if route_temperature is not None:
-            print(f"\n🌡️ CONTAINER INITIALIZED WITH TEMPERATURE SYSTEM")
+            print(f"\n[TEMP] CONTAINER INITIALIZED WITH TEMPERATURE SYSTEM")
             print(f"   Route temperature: {route_temperature}°C")
             print(f"   Temperature-sensitive items will use temperature-safe spaces")
             print(f"   Wall buffer: {wall_buffer*100:.1f}cm from all container walls")
             print(f"   Available space for temperature-sensitive items: {temp_safe_space.width:.2f}m × {temp_safe_space.depth:.2f}m × {temp_safe_space.height:.2f}m\n")
+
+    @property
+    def volume(self):
+        """Container volume property for compatibility with genetic algorithm"""
+        return self.total_volume
 
     # generate_alternative_arrangement method removed
