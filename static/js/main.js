@@ -495,7 +495,8 @@ document.addEventListener("DOMContentLoaded", function () {
   
   // Reset scroll position on page navigation/reload
   window.addEventListener('beforeunload', function() {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
   });
   
   // Reset scroll when navigating with browser buttons

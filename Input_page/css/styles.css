@@ -48,8 +48,171 @@ body.dark-mode {
 /* Table styles */
 .cargo-table {
   height: 400px;
-  overflow: visible;
-  margin-bottom: 20px;
+  overflow: auto;
+}
+
+/* Responsive adjustments for Input page */
+@media (max-width: 1200px) {
+  .cargo-table {
+    height: 350px;
+  }
+  
+  .container-fluid {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .cargo-table {
+    height: 300px;
+  }
+  
+  .container-fluid {
+    padding: 0.75rem;
+  }
+  
+  .row {
+    margin: 0.5rem 0;
+  }
+  
+  .col-md-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .btn-group {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .btn-group .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cargo-table {
+    height: 250px;
+  }
+  
+  .container-fluid {
+    padding: 0.5rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .form-control {
+    margin-bottom: 0.75rem;
+  }
+  
+  .modal-dialog {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+  
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-nav {
+    flex-direction: column;
+  }
+  
+  .nav-link {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cargo-table {
+    height: 200px;
+  }
+  
+  .container-fluid {
+    padding: 0.25rem;
+  }
+  
+  .card-header {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  .btn {
+    padding: 0.625rem;
+    font-size: 0.85rem;
+  }
+  
+  .form-control {
+    font-size: 0.9rem;
+  }
+  
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+  
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+  
+  .alert {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .cargo-table {
+    height: 180px;
+  }
+  
+  .card-header {
+    padding: 0.375rem 0.5rem;
+  }
+  
+  .card-body {
+    padding: 0.5rem;
+  }
+  
+  .btn {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .form-control {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.75rem;
+  }
 }
 
 /* Confidence indicators */
