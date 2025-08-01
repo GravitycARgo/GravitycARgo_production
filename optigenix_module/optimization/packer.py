@@ -17,6 +17,11 @@ from optigenix_module.models.item import Item
 from optigenix_module.utils.llm_connector import get_llm_client
 from optigenix_module.optimization.temperature import TemperatureConstraintHandler
 from optigenix_module.optimization.max_utilization_fitness import apply_max_volume_fitness, detect_demo_dataset
+from optigenix_module.utils.llm_logger import (
+    log_llm_prompt, log_llm_response, log_llm_mutation_strategy, 
+    log_llm_fitness_weights, log_llm_decision, log_llm_error, 
+    log_llm_performance_impact
+)
 
 # Configure logging
 logging.basicConfig(
@@ -249,6 +254,7 @@ class GeneticPacker:
 
         if not llm_client or not hasattr(llm_client, 'get_llm_completion'):
             logger.info("LLM client not available for initial dynamic fitness weights.")
+            log_llm_error("initial_fitness_weights", "LLM client not available", {"has_client": False})
             return None
 
         if initial_metrics is None:
@@ -274,12 +280,19 @@ class GeneticPacker:
         Ensure the numeric weights sum up to 1.0.
         """
         
+        # Log the prompt being sent
+        log_llm_prompt("initial_fitness_weights", prompt, initial_metrics)
+        
         try:
             response_text = llm_client.get_llm_completion(prompt)
             logger.info(f"LLM response for initial dynamic weights: {response_text}")
             
+            # Log the response received
+            log_llm_response("initial_fitness_weights", response_text)
+            
             if not response_text:
                 logger.warning("LLM returned an empty response for initial dynamic weights.")
+                log_llm_error("initial_fitness_weights", "Empty response from LLM", {"prompt_length": len(prompt)})
                 return None
 
             # It's good practice to strip whitespace before parsing JSON
@@ -303,6 +316,7 @@ class GeneticPacker:
 
             if abs(total_weight) < 1e-6: # Check if sum is effectively zero
                  logger.warning("Sum of initial weights from LLM is zero. Cannot normalize. Returning None.")
+                 log_llm_error("initial_fitness_weights", "Sum of weights is zero", {"weights": parsed_weights})
                  return None
 
             if abs(total_weight - 1.0) > 0.01: # Normalize if not already summing to 1.0
@@ -310,14 +324,19 @@ class GeneticPacker:
                 for key in parsed_weights:
                     parsed_weights[key] /= total_weight # Normalize
             
+            # Log the successful fitness weights decision
+            log_llm_fitness_weights(0, parsed_weights, explanation)
+            
             logger.info(f"Successfully obtained and processed initial dynamic fitness weights: {parsed_weights}")
             return parsed_weights
             
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             logger.error("Error decoding JSON response from LLM for initial dynamic fitness weights.", exc_info=True)
+            log_llm_error("initial_fitness_weights", f"JSON decode error: {str(e)}", {"response": response_text})
             return None
         except Exception as e:
             logger.error(f"Error getting initial dynamic fitness weights from LLM: {e}", exc_info=True)
+            log_llm_error("initial_fitness_weights", f"General error: {str(e)}", {"metrics": initial_metrics})
             return None
 
     def _get_default_fitness_weights(self):
@@ -644,7 +663,10 @@ class GeneticPacker:
             # If stagnation is detected but not critical, use fallback aggressive strategy
             if stagnation_counter >= 3:
                 # Return aggressive mutation strategy without calling LLM
-                return self._get_aggressive_mutation_strategy(stagnation_counter)
+                fallback_strategy = self._get_aggressive_mutation_strategy(stagnation_counter)
+                log_llm_decision("adaptive_mutation_strategy", f"Using fallback strategy: {fallback_strategy['operation_focus']}", 
+                               "Stagnation detected but not in LLM check cycle", {"generation": generation, "stagnation": stagnation_counter})
+                return fallback_strategy
             return None
             
         try:
@@ -699,7 +721,21 @@ class GeneticPacker:
             RESPOND WITH ONLY THE JSON OBJECT, NO OTHER TEXT.
             """
             
+            # Log the prompt being sent to LLM
+            context = {
+                "generation": generation,
+                "best_fitness": best_fitness,
+                "avg_fitness": avg_fitness,
+                "fitness_variance": fitness_variance,
+                "stagnation_counter": stagnation_counter,
+                "population_size": len(population)
+            }
+            log_llm_prompt("adaptive_mutation_strategy", prompt, context)
+            
             response = llm_client.generate(prompt)
+            
+            # Log the response received
+            log_llm_response("adaptive_mutation_strategy", response)
             
             try:
                 strategy = json.loads(response.strip())
@@ -714,18 +750,27 @@ class GeneticPacker:
                         strategy["mutation_rate_modifier"] = 0.2
                         strategy["explanation"] = "Overriding with aggressive strategy due to critical stagnation"
                     
+                    # Log the mutation strategy decision
+                    log_llm_mutation_strategy(generation, strategy, strategy.get('explanation', 'No explanation provided'))
+                    
                     logger.info(f"    🤖 LLM Strategy: {strategy['operation_focus']} (rate: {strategy['mutation_rate_modifier']:.3f})")
                     logger.info(f"    💭 Explanation: {strategy.get('explanation', 'No explanation provided')}")
                     return strategy
+                else:
+                    log_llm_error("adaptive_mutation_strategy", "Missing required keys in LLM response", 
+                                {"response": response, "parsed_strategy": strategy})
                     
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
                 logger.warning("WARNING: Invalid LLM response format")
+                log_llm_error("adaptive_mutation_strategy", f"JSON decode error: {str(e)}", 
+                            {"response": response})
                 return self._get_aggressive_mutation_strategy(stagnation_counter)
                 
             return None
             
         except Exception as e:
             logger.error(f"ERROR: Failed to get adaptive mutation strategy: {e}")
+            log_llm_error("adaptive_mutation_strategy", f"General error: {str(e)}", context)
             return self._get_aggressive_mutation_strategy(stagnation_counter)
     
     def _get_aggressive_mutation_strategy(self, stagnation_counter: int) -> Dict[str, Any]:
@@ -778,10 +823,12 @@ class GeneticPacker:
             # Handle None current_metrics
             if current_metrics is None:
                 logger.warning("current_metrics is None in _get_dynamic_fitness_weights. Cannot fetch dynamic weights.")
+                log_llm_error("dynamic_fitness_weights", "current_metrics is None", {"generation": generation})
                 return None
 
             if not llm_client or not hasattr(llm_client, 'get_llm_completion'):
                 logger.info("LLM client not available for dynamic fitness weights.")
+                log_llm_error("dynamic_fitness_weights", "LLM client not available", {"generation": generation})
                 return None
             
             # Calculate metrics for LLM context
@@ -832,11 +879,26 @@ class GeneticPacker:
             RESPOND WITH ONLY THE JSON OBJECT, NO OTHER TEXT.
             """
             
+            # Log the prompt being sent to LLM
+            context = {
+                "generation": generation,
+                "best_fitness": best_fitness,
+                "avg_fitness": avg_fitness,
+                "fitness_variance": fitness_variance,
+                "current_metrics": current_metrics,
+                "route_temperature": self.route_temperature
+            }
+            log_llm_prompt("dynamic_fitness_weights", prompt, context)
+            
             response_text = llm_client.get_llm_completion(prompt)
             logger.info(f"LLM response for dynamic fitness weights: {response_text}")
             
+            # Log the response received
+            log_llm_response("dynamic_fitness_weights", response_text)
+            
             if not response_text:
                 logger.warning("LLM returned an empty response for dynamic fitness weights.")
+                log_llm_error("dynamic_fitness_weights", "Empty response from LLM", context)
                 return None
 
             # It's good practice to strip whitespace before parsing JSON
@@ -859,6 +921,7 @@ class GeneticPacker:
 
             if abs(total_weight) < 1e-6: # Check if sum is effectively zero
                  logger.warning("Sum of dynamic weights from LLM is zero. Cannot normalize. Returning None.")
+                 log_llm_error("dynamic_fitness_weights", "Sum of weights is zero", {"weights": parsed_weights})
                  return None
 
             if abs(total_weight - 1.0) > 0.01: # Normalize if not already summing to 1.0
@@ -866,14 +929,25 @@ class GeneticPacker:
                 for key in parsed_weights:
                     parsed_weights[key] /= total_weight # Normalize
             
+            # Log the fitness weights decision
+            log_llm_fitness_weights(generation, parsed_weights, explanation)
+            
+            # Calculate performance impact if we have previous weights
+            if hasattr(self, 'fitness_weights') and self.fitness_weights:
+                before_metrics = {"weights": self.fitness_weights}
+                after_metrics = {"weights": parsed_weights}
+                log_llm_performance_impact("dynamic_fitness_weights", before_metrics, after_metrics)
+            
             logger.info(f"Successfully obtained and processed dynamic fitness weights: {parsed_weights}")
             return parsed_weights
             
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
             logger.error("Error decoding JSON response from LLM for dynamic fitness weights.", exc_info=True)
+            log_llm_error("dynamic_fitness_weights", f"JSON decode error: {str(e)}", {"response": response_text})
             return None
         except Exception as e:
             logger.error(f"Error getting dynamic fitness weights from LLM: {e}", exc_info=True)
+            log_llm_error("dynamic_fitness_weights", f"General error: {str(e)}", context)
             return None
 
     def optimize(self, items, fitness_weights=None):
@@ -894,11 +968,17 @@ class GeneticPacker:
         if fitness_weights and isinstance(fitness_weights, dict) and any(w > 0 for w in fitness_weights.values()): # Check if any weight is positive
             self.fitness_weights = fitness_weights
             logger.info(f"Using fitness weights provided by UI/caller: {self.fitness_weights}")
+            log_llm_decision("fitness_weight_source", "Using UI-provided fitness weights", 
+                           "Valid fitness weights received from user interface", {"weights": fitness_weights})
         else:
             if not fitness_weights:
                  logger.info("No fitness_weights from UI/caller (None or empty). Attempting to get dynamic weights from LLM.")
+                 log_llm_decision("fitness_weight_source", "Requesting LLM fitness weights", 
+                                "No weights provided by UI, consulting LLM", {"ui_weights": fitness_weights})
             else: # Handles case where fitness_weights might be e.g. all zeros from UI
                  logger.info(f"Received fitness_weights from UI/caller ({fitness_weights}), but they are not effectively usable (e.g., all zero). Attempting to get dynamic weights from LLM.")
+                 log_llm_decision("fitness_weight_source", "Requesting LLM fitness weights", 
+                                "UI weights unusable (all zero), consulting LLM", {"ui_weights": fitness_weights})
 
             # Calculate initial metrics first, as _get_initial_dynamic_fitness_weights might need them.
             # self.items_to_pack should be set before calling _calculate_initial_metrics.
@@ -908,14 +988,22 @@ class GeneticPacker:
             if dynamic_weights:
                 self.fitness_weights = dynamic_weights
                 logger.info(f"Using dynamic fitness weights from LLM: {self.fitness_weights}")
+                log_llm_decision("fitness_weight_source", "Using LLM fitness weights", 
+                               "Successfully obtained weights from LLM", {"weights": dynamic_weights})
             else:
                 logger.info("Failed to get dynamic weights from LLM or LLM disabled. Using default fitness weights.")
-                self.fitness_weights = self._get_default_fitness_weights()
+                default_weights = self._get_default_fitness_weights()
+                self.fitness_weights = default_weights
+                log_llm_decision("fitness_weight_source", "Using default fitness weights", 
+                               "LLM unavailable or failed, falling back to defaults", {"weights": default_weights})
         
         # Final fallback: Ensure fitness_weights are always set to a default if still None or empty
         if not self.fitness_weights or not any(w > 0 for w in self.fitness_weights.values()):
             logger.warning("Fitness weights were still None, empty, or all zero after all attempts. Forcing default weights.")
-            self.fitness_weights = self._get_default_fitness_weights()
+            default_weights = self._get_default_fitness_weights()
+            self.fitness_weights = default_weights
+            log_llm_error("fitness_weight_source", "Forced default weights", 
+                        {"reason": "All weight sources failed", "final_weights": default_weights})
         
         logger.info(f"Final fitness weights for optimization run: {self.fitness_weights}")
 
@@ -1001,21 +1089,43 @@ class GeneticPacker:
                 if new_strategy:
                     logger.info(f"    🧬 Adapting mutation strategy: {new_strategy['operation_focus']} (rate: {new_strategy['mutation_rate_modifier']:.3f})")
                     logger.info(f"    💡 Reasoning: {new_strategy.get('explanation', 'No explanation provided')}")
+                    
+                    # Log the performance metrics before applying the strategy
+                    before_metrics = {
+                        "avg_fitness": sum(g.fitness for g in population) / len(population),
+                        "best_fitness": max(g.fitness for g in population),
+                        "stagnation_counter": stagnation_counter
+                    }
+                    
+                    # Apply mutation strategy to population
                     for genome in population:
                         genome.mutate(
                             operation_focus=new_strategy["operation_focus"],
                             rate_modifier=new_strategy["mutation_rate_modifier"]
                         )
+                    
+                    # Log that the mutation strategy was applied
+                    log_llm_decision("mutation_application", f"Applied {new_strategy['operation_focus']} mutation to {len(population)} genomes", 
+                                   new_strategy.get('explanation', 'No explanation'), before_metrics)
 
             # Dynamic fitness weight adjustment every few generations (only if LLM is available)
             if generation > 0 and generation % 3 == 0 and best_overall_genome:
                 # Get current metrics from best genome for dynamic weight adjustment
                 current_metrics = getattr(best_overall_genome, 'metrics', {})
                 if current_metrics:
+                    # Store previous weights for comparison
+                    previous_weights = self.fitness_weights.copy() if self.fitness_weights else {}
+                    
                     dynamic_weights = self._get_dynamic_fitness_weights(generation, population, current_metrics)
                     if dynamic_weights:
                         logger.info(f"    🎯 Updated fitness weights based on current performance")
                         logger.info(f"    📊 New weights: {dynamic_weights}")
+                        
+                        # Log the weight change decision
+                        log_llm_decision("fitness_weight_update", f"Updated fitness weights at generation {generation}", 
+                                       "Periodic weight adjustment based on current performance", 
+                                       {"previous_weights": previous_weights, "new_weights": dynamic_weights})
+                        
                         self.fitness_weights = dynamic_weights
 
             # Elitism: carry forward the best genome
