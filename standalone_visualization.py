@@ -262,7 +262,7 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-3">
                         <span class="text-sm" style="color: #A0AEC0;">CREATED BY</span>
-                        <span class="text-sm font-semibold" style="color: #5B76F3;">Team System32</span>
+                        <span class="text-sm font-semibold" style="color: #5B76F3;">Team Gravity</span>
                     </div>
                     <button id="get-started-btn" class="px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg" style="background: #3C82F6; color: #FFFFFF;">
                         Get Started
@@ -1438,7 +1438,7 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                   '• Hover over items to see detailed information\\n' +
                   '• Use the controls to toggle different view modes\\n' +
                   '• Select different container files from the dropdown\\n\\n' +
-                  'Created by Team System32');
+                  'Created by Team Gravity');
         });
         
         // 3D/AR Toggle Button Event Listeners

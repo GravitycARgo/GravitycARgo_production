@@ -1,12 +1,12 @@
 # Container Visualization Navbar Mobile Fixes
 
 ## Overview
-Fixed the mobile responsiveness issues in the container visualization template's navbar where the "3D View/AR View" toggle, "Team System32" text, and "Get Started" button were overlapping or not properly spaced on mobile devices.
+Fixed the mobile responsiveness issues in the container visualization template's navbar where the "3D View/AR View" toggle, "Team Gravity" text, and "Get Started" button were overlapping or not properly spaced on mobile devices.
 
 ## Issues Fixed
 
 ### 1. Navbar Overlapping Elements
-- **Problem**: On mobile devices, the navbar elements (3D/AR toggle, Team System32 text, and Get Started button) were overlapping due to insufficient space
+- **Problem**: On mobile devices, the navbar elements (3D/AR toggle, Team Gravity text, and Get Started button) were overlapping due to insufficient space
 - **Solution**: Implemented vertical stacking layout for mobile breakpoints with proper spacing
 
 ### 2. Touch Target Sizes
@@ -65,7 +65,7 @@ Fixed the mobile responsiveness issues in the container visualization template's
 #### Extra Small Mobile Layout (360px and down)
 - Further reduced font sizes
 - Minimal padding and spacing
-- Stacked Team System32 text vertically
+- Stacked Team Gravity text vertically
 - Very compact button sizes
 - 12px SVG icons
 
