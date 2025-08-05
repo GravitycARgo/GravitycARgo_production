@@ -318,7 +318,7 @@
    Main Layout Styles
 --------------------------------- */
 .optimizer-container {
-  padding-top: 8rem;
+  padding-top: 1rem; /* Further reduced from 2rem to 1rem for optimal navbar to content flow */
   padding-bottom: 4rem;
   position: relative;
   overflow: hidden;
@@ -326,7 +326,7 @@
 
 .optimizer-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem; /* Further reduced from 2rem to 1.5rem */
 }
 
 .tech-badge {
@@ -334,9 +334,9 @@
   align-items: center;
   background: rgba(59, 130, 246, 0.1);
   border: 1px solid rgba(59, 130, 246, 0.2);
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem; /* More compact padding */
   border-radius: 50px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
 }
 
 .badge-icon {
@@ -346,21 +346,21 @@
 
 .badge-text {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Slightly smaller */
   color: var(--light);
 }
 
 .optimizer-title {
-  font-size: 3.5rem;
+  font-size: 2.8rem; /* Reduced from 3.5rem for more compact layout */
   font-weight: 800;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
   letter-spacing: -0.03em;
   color: var(--light);
   line-height: 1.1;
 }
 
 .optimizer-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.1rem; /* Slightly smaller from 1.25rem */
   color: var(--gray);
   max-width: 700px;
   margin: 0 auto;
@@ -383,10 +383,10 @@
   backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--card-radius);
-  padding: 3rem 2rem;
+  padding: 2rem 2rem; /* Reduced from 3rem to 2rem for tighter spacing */
   position: relative;
   overflow: hidden;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem; /* Reduced from 4rem to 2rem */
   box-shadow: var(--shadow-lg);
 }
 

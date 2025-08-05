@@ -59,33 +59,13 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/container-visualization.css') }}"
     />
-    
-    <!-- Custom CSS to fix scroll-to-top issue -->
-    <style>
-      /* Prevent automatic scroll to top during step transitions */
-      html {
-        scroll-behavior: auto !important;
-      }
-      
-      /* Maintain scroll position during step changes */
-      .form-section {
-        scroll-margin-top: 0;
-      }
-      
-      /* Override locomotive scroll behavior for step navigation */
-      [data-scroll-container] {
-        scroll-behavior: auto !important;
-      }
-      
-      /* Prevent focus jumps */
-      .form-section:focus,
-      .form-section:target {
-        scroll-margin-top: 0;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/navigation-improvements.css') }}"
+    />
   </head>
 
-  <body data-scroll-container>
+  <body data-scroll-container class="optimizer-page">
     <!-- 3D Background Elements -->
     <div class="floating-elements">
       <div class="floating-cube"></div>
@@ -829,14 +809,12 @@
         once: true
       });
 
-      // Initialize Locomotive Scroll for smooth scrolling (modified to prevent jump-to-top)
+      // Initialize Locomotive Scroll for smooth scrolling
       const scroll = new LocomotiveScroll({
         el: document.querySelector('[data-scroll-container]'),
-        smooth: false, // Disable smooth scrolling to prevent conflicts
+        smooth: true,
         smartphone: { smooth: false },
-        tablet: { smooth: false },
-        scrollFromAnywhere: false, // Prevent automatic scrolling
-        resetNativeScroll: false // Don't reset scroll position
+        tablet: { smooth: false }
       });
 
       // Get the data passed from Flask
@@ -857,39 +835,6 @@
 
       document.addEventListener('DOMContentLoaded', function() {
         console.log("DOM fully loaded - initializing GravitycARgo application");
-        
-        // Prevent scroll-to-top behavior during step navigation
-        const originalScrollTo = window.scrollTo;
-        const originalScrollBy = window.scrollBy;
-        let allowScroll = true;
-        
-        // Override scroll functions during step transitions
-        window.scrollTo = function(x, y) {
-          if (allowScroll) {
-            originalScrollTo.call(window, x, y);
-          }
-        };
-        
-        window.scrollBy = function(x, y) {
-          if (allowScroll) {
-            originalScrollBy.call(window, x, y);
-          }
-        };
-        
-        // Temporarily disable scrolling during step changes
-        function temporarilyDisableScroll() {
-          allowScroll = false;
-          setTimeout(() => {
-            allowScroll = true;
-          }, 500); // Allow scroll again after 500ms
-        }
-        
-        // Add event listeners to buttons that trigger step changes
-        document.addEventListener('click', function(e) {
-          if (e.target.matches('#next1, #prev1, .btn-next, .btn-prev')) {
-            temporarilyDisableScroll();
-          }
-        });
         
         // Initialize all variables in one place to avoid duplicate declarations
         const fileInput = document.getElementById('file_input');

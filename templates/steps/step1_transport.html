@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Transport Mode Selection | GravitycARgo</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
+    
+    <style>
+        /* Step-specific styles */
+        .step-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .step-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .progress-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar-custom {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent));
+            width: 25%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .step-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .navigation-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        
+        .btn-step {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            margin-left: 1rem;
+        }
+        
+        .btn-step.btn-next {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent));
+            color: white;
+        }
+        
+        .btn-step.btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn-step:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body class="optimizer-page">
+    <!-- 3D Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-pyramid"></div>
+        <div class="floating-sphere"></div>
+        <div class="gradient-blob"></div>
+        <div class="gradient-blob blob-secondary"></div>
+    </div>
+
+    <!-- Animated Background Grid -->
+    <div class="background-grid">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube logo-icon"></i>
+                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="step-container">
+        <div class="container">
+            <div class="step-content">
+                <!-- Progress Indicator -->
+                <div class="progress-indicator" data-aos="fade-down">
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="step-info">
+                        <strong>Step 1 of 4:</strong> Transport Mode Selection
+                    </div>
+                </div>
+
+                <!-- Main Card -->
+                <div class="wizard-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="card-glow"></div>
+                    
+                    <!-- Header -->
+                    <div class="optimizer-header text-center">
+                        <div class="tech-badge" data-aos="fade-down">
+                            <i class="fas fa-shipping-fast"></i>
+                            Transport Mode
+                        </div>
+                        <h1 class="optimizer-title" data-aos="fade-down" data-aos-delay="100">
+                            Select Your Transport Method
+                        </h1>
+                        <p class="optimizer-subtitle" data-aos="fade-down" data-aos-delay="200">
+                            Choose your preferred transportation method to optimize container selection
+                        </p>
+                    </div>
+
+                    <!-- Transport Mode Selection Form -->
+                    <form id="step1Form" method="post" action="/step1">
+                        <input type="hidden" id="transport_mode" name="transport_mode" required>
+                        
+                        <div class="transport-cards">
+                            <div class="transport-option transport-3d" data-value="1" data-aos="fade-up" data-aos-delay="400">
+                                <div class="transport-option-inner">
+                                    <div class="option-icon-wrapper">
+                                        <div class="icon-effect road-effect">
+                                            <div class="road-line"></div>
+                                            <div class="road-line"></div>
+                                        </div>
+                                        <i class="fas fa-truck transport-icon"></i>
+                                    </div>
+                                    <h3 class="option-title">Road Transport</h3>
+                                    <p class="option-description">Flexible and cost-effective for medium distances</p>
+                                    <div class="option-features">
+                                        <span class="feature-badge">Door-to-door</span>
+                                        <span class="feature-badge">Flexible timing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transport-option transport-3d" data-value="2" data-aos="fade-up" data-aos-delay="500">
+                                <div class="transport-option-inner">
+                                    <div class="option-icon-wrapper">
+                                        <div class="icon-effect ocean-effect">
+                                            <div class="wave"></div>
+                                            <div class="wave"></div>
+                                            <div class="wave"></div>
+                                        </div>
+                                        <i class="fas fa-ship transport-icon"></i>
+                                    </div>
+                                    <h3 class="option-title">Sea Transport</h3>
+                                    <p class="option-description">Most economical for large volumes and long distances</p>
+                                    <div class="option-features">
+                                        <span class="feature-badge">High capacity</span>
+                                        <span class="feature-badge">Cost effective</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transport-option transport-3d" data-value="3" data-aos="fade-up" data-aos-delay="600">
+                                <div class="transport-option-inner">
+                                    <div class="option-icon-wrapper">
+                                        <div class="icon-effect air-effect">
+                                            <div class="cloud"></div>
+                                            <div class="cloud"></div>
+                                        </div>
+                                        <i class="fas fa-plane transport-icon"></i>
+                                    </div>
+                                    <h3 class="option-title">Air Transport</h3>
+                                    <p class="option-description">Fastest delivery for urgent and high-value cargo</p>
+                                    <div class="option-features">
+                                        <span class="feature-badge">Fast delivery</span>
+                                        <span class="feature-badge">Global reach</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transport-option transport-3d" data-value="4" data-aos="fade-up" data-aos-delay="700">
+                                <div class="transport-option-inner">
+                                    <div class="option-icon-wrapper">
+                                        <div class="icon-effect rail-effect">
+                                            <div class="rail-track"></div>
+                                            <div class="rail-track"></div>
+                                        </div>
+                                        <i class="fas fa-train transport-icon"></i>
+                                    </div>
+                                    <h3 class="option-title">Rail Transport</h3>
+                                    <p class="option-description">Eco-friendly option for bulk cargo over land</p>
+                                    <div class="option-features">
+                                        <span class="feature-badge">Eco-friendly</span>
+                                        <span class="feature-badge">Bulk cargo</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transport-option transport-3d" data-value="5" data-aos="fade-up" data-aos-delay="800">
+                                <div class="transport-option-inner">
+                                    <div class="option-icon-wrapper">
+                                        <div class="icon-effect custom-effect">
+                                            <div class="custom-spark"></div>
+                                            <div class="custom-spark"></div>
+                                            <div class="custom-spark"></div>
+                                        </div>
+                                        <i class="fas fa-cog transport-icon"></i>
+                                    </div>
+                                    <h3 class="option-title">Custom Container</h3>
+                                    <p class="option-description">Define your own container specifications</p>
+                                    <div class="option-features">
+                                        <span class="feature-badge">Custom size</span>
+                                        <span class="feature-badge">Flexible</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+        <button type="button" class="btn-step btn-next" id="nextBtn" disabled onclick="proceedToNext()">
+            Next Step
+            <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Hidden data for JavaScript -->
+    <script type="application/json" id="flask-data">{{ data | tojson | safe }}</script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            offset: 100,
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Get the data passed from Flask
+        let defaultData;
+        try {
+            const dataElement = document.getElementById('flask-data');
+            defaultData = dataElement ? JSON.parse(dataElement.textContent) : { transport_modes: [] };
+        } catch (e) {
+            console.error('Error parsing Flask data:', e);
+            defaultData = { transport_modes: [] };
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Step 1 - Transport Mode Selection loaded");
+            
+            const transportOptions = document.querySelectorAll('.transport-option');
+            const transportMode = document.getElementById('transport_mode');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Transport option selection
+            transportOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log("Transport option clicked:", this.dataset.value);
+                    
+                    // Remove selected class from all options
+                    transportOptions.forEach(opt => {
+                        opt.classList.remove('selected', 'active');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected', 'active');
+                    
+                    // Set transport mode value
+                    const transportValue = this.getAttribute('data-value');
+                    if (transportMode) {
+                        transportMode.value = transportValue;
+                        console.log("Transport mode input set to:", transportValue);
+                    }
+                    
+                    // Enable next button
+                    if (nextBtn) {
+                        nextBtn.disabled = false;
+                        nextBtn.classList.remove('disabled');
+                    }
+                });
+            });
+        });
+
+        function proceedToNext() {
+            const transportMode = document.getElementById('transport_mode');
+            
+            if (!transportMode || !transportMode.value) {
+                alert('Please select a transport mode');
+                return;
+            }
+            
+            // Store selection in sessionStorage for persistence
+            sessionStorage.setItem('step1_transport_mode', transportMode.value);
+            
+            // Submit form to next step
+            document.getElementById('step1Form').submit();
+        }
+    </script>
+</body>
+</html>

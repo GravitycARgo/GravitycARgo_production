@@ -483,47 +483,4 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("DOMContentLoaded", function() {
     initializeWebSocket();
   });
-  
-  // Add scroll position reset functionality for navigation
-  function resetScrollPosition() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Also reset locomotive scroll if it exists
-    if (window.locoScroll) {
-      window.locoScroll.scrollTo(0, { duration: 500 });
-    }
-  }
-  
-  // Reset scroll position on page navigation/reload
-  window.addEventListener('beforeunload', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  });
-  
-  // Reset scroll when navigating with browser buttons
-  window.addEventListener('popstate', function() {
-    setTimeout(resetScrollPosition, 100);
-  });
-  
-  // Add event listeners to navigation links to reset scroll
-  document.addEventListener('DOMContentLoaded', function() {
-    // Find all navigation links and add scroll reset
-    const navLinks = document.querySelectorAll('a[href^="/"], a[href^="./"], .nav-link, .navbar-nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
-        // Only reset scroll for actual page navigation, not anchors
-        const href = this.getAttribute('href');
-        if (href && !href.startsWith('#') && !href.includes('#')) {
-          resetScrollPosition();
-        }
-      });
-    });
-    
-    // Reset scroll for form submissions that redirect
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-      form.addEventListener('submit', function() {
-        setTimeout(resetScrollPosition, 100);
-      });
-    });
-  });
 });

@@ -473,9 +473,6 @@ const mapState = {
 
   // Assign functions to window object to make them globally accessible
   window.switchToRoute = function (index) {
-    // Reset scroll position when switching routes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
     clearMap();
     const route = mapState.alternativeRoutes[index];
     displayRoute(route, [], mapState.currentCheckpoints);
@@ -653,9 +650,6 @@ const mapState = {
   window.switchToRoute = function (routeIndex) {
     clearMap();
 
-    // Reset scroll position when switching routes
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
     // Update active route card styling
     document.querySelectorAll(".route-card").forEach((card) => {
       card.classList.remove("active");
@@ -759,23 +753,6 @@ const mapState = {
 
   // Initialize when DOM is loaded
   $(document).ready(function () {
-    // Reset scroll position to top when page loads
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
-    
-    // Add event listeners for navigation-related scroll reset
-    window.addEventListener('beforeunload', function() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-    });
-    
-    window.addEventListener('popstate', function() {
-      setTimeout(function() {
-       window.scrollTo({ top: 0, behavior: "smooth" });
-
-      }, 100);
-    });
-    
     if (!mapState.map && document.getElementById("map")) {
       // Initialize map only if not already initialized
       initMap();
