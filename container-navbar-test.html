@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Visualization Navbar Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="static/css/comprehensive-responsive.css">
+    <link rel="stylesheet" href="static/css/container-visualization-responsive.css">
+    <link rel="stylesheet" href="static/css/navbar-mobile-fixes.css">
+    <style>
+        body { margin: 0; padding: 0; background: #0B1120; }
+        .device-frame {
+            border: 2px solid #ccc;
+            border-radius: 20px;
+            margin: 20px;
+            overflow: hidden;
+            background: white;
+        }
+        .device-320 { width: 320px; }
+        .device-375 { width: 375px; }
+        .device-768 { width: 768px; }
+        .test-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body style="background: #f0f0f0;">
+    
+<div class="test-container">
+    <h2>Container Visualization Navbar Mobile Test</h2>
+    
+    <!-- Mobile 320px -->
+    <div class="device-frame device-320">
+        <div style="background: #0B1120; height: 400px; overflow-y: auto;">
+            <header class="sticky top-0 z-50 px-6 py-4" style="background: linear-gradient(90deg, #0B1120 0%, #101B38 100%); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(91, 118, 243, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <h1 class="text-xl font-bold" style="color: #FFFFFF;">GravityCargo</h1>
+                        
+                        <!-- 3D/AR Toggle Button Group -->
+                        <div class="flex rounded-lg overflow-hidden border border-white/20" style="background: rgba(255, 255, 255, 0.05);">
+                            <button id="view-3d" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 toggle-active" style="background: rgba(91, 118, 243, 0.8); color: #FFFFFF;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                                    <path d="M2 17L12 22L22 17"/>
+                                    <path d="M2 12L12 17L22 12"/>
+                                </svg>
+                                3D View
+                            </button>
+                            <button id="view-ar" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300" style="background: rgba(255, 255, 255, 0.9); color: rgba(107, 114, 128, 1); border-left: 1px solid rgba(255, 255, 255, 0.2);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12V13H17V12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12V13H5V12Z"/>
+                                    <path d="M3 14H5V17C5 18.1046 5.89543 19 7 19H8V21H7C4.79086 21 3 19.2091 3 17V14Z"/>
+                                    <path d="M19 14H21V17C21 19.2091 19.2091 21 17 21H16V19H17C18.1046 19 19 18.1046 19 17V14Z"/>
+                                </svg>
+                                AR View
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side content -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm" style="color: #A0AEC0;">CREATED BY</span>
+                            <span class="text-sm font-semibold" style="color: #5B76F3;">Team System32</span>
+                        </div>
+                        <button id="get-started-btn" class="px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg" style="background: #3C82F6; color: #FFFFFF;">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <div style="padding: 20px; color: white;">
+                <p>Content below navbar (320px width)</p>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 10px; background: #333; color: white; font-size: 12px;">
+            Mobile 320px
+        </div>
+    </div>
+
+    <!-- Mobile 375px -->
+    <div class="device-frame device-375">
+        <div style="background: #0B1120; height: 400px; overflow-y: auto;">
+            <header class="sticky top-0 z-50 px-6 py-4" style="background: linear-gradient(90deg, #0B1120 0%, #101B38 100%); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(91, 118, 243, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <h1 class="text-xl font-bold" style="color: #FFFFFF;">GravityCargo</h1>
+                        
+                        <!-- 3D/AR Toggle Button Group -->
+                        <div class="flex rounded-lg overflow-hidden border border-white/20" style="background: rgba(255, 255, 255, 0.05);">
+                            <button id="view-3d" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 toggle-active" style="background: rgba(91, 118, 243, 0.8); color: #FFFFFF;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                                    <path d="M2 17L12 22L22 17"/>
+                                    <path d="M2 12L12 17L22 12"/>
+                                </svg>
+                                3D View
+                            </button>
+                            <button id="view-ar" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300" style="background: rgba(255, 255, 255, 0.9); color: rgba(107, 114, 128, 1); border-left: 1px solid rgba(255, 255, 255, 0.2);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12V13H17V12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12V13H5V12Z"/>
+                                    <path d="M3 14H5V17C5 18.1046 5.89543 19 7 19H8V21H7C4.79086 21 3 19.2091 3 17V14Z"/>
+                                    <path d="M19 14H21V17C21 19.2091 19.2091 21 17 21H16V19H17C18.1046 19 19 18.1046 19 17V14Z"/>
+                                </svg>
+                                AR View
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side content -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm" style="color: #A0AEC0;">CREATED BY</span>
+                            <span class="text-sm font-semibold" style="color: #5B76F3;">Team System32</span>
+                        </div>
+                        <button id="get-started-btn" class="px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg" style="background: #3C82F6; color: #FFFFFF;">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <div style="padding: 20px; color: white;">
+                <p>Content below navbar (375px width)</p>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 10px; background: #333; color: white; font-size: 12px;">
+            Mobile 375px
+        </div>
+    </div>
+
+    <!-- Tablet 768px -->
+    <div class="device-frame device-768">
+        <div style="background: #0B1120; height: 400px; overflow-y: auto;">
+            <header class="sticky top-0 z-50 px-6 py-4" style="background: linear-gradient(90deg, #0B1120 0%, #101B38 100%); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(91, 118, 243, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-6">
+                        <h1 class="text-xl font-bold" style="color: #FFFFFF;">GravityCargo</h1>
+                        
+                        <!-- 3D/AR Toggle Button Group -->
+                        <div class="flex rounded-lg overflow-hidden border border-white/20" style="background: rgba(255, 255, 255, 0.05);">
+                            <button id="view-3d" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300 toggle-active" style="background: rgba(91, 118, 243, 0.8); color: #FFFFFF;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                                    <path d="M2 17L12 22L22 17"/>
+                                    <path d="M2 12L12 17L22 12"/>
+                                </svg>
+                                3D View
+                            </button>
+                            <button id="view-ar" class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-300" style="background: rgba(255, 255, 255, 0.9); color: rgba(107, 114, 128, 1); border-left: 1px solid rgba(255, 255, 255, 0.2);">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12V13H17V12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12V13H5V12Z"/>
+                                    <path d="M3 14H5V17C5 18.1046 5.89543 19 7 19H8V21H7C4.79086 21 3 19.2091 3 17V14Z"/>
+                                    <path d="M19 14H21V17C21 19.2091 19.2091 21 17 21H16V19H17C18.1046 19 19 18.1046 19 17V14Z"/>
+                                </svg>
+                                AR View
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Right side content -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm" style="color: #A0AEC0;">CREATED BY</span>
+                            <span class="text-sm font-semibold" style="color: #5B76F3;">Team System32</span>
+                        </div>
+                        <button id="get-started-btn" class="px-6 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg" style="background: #3C82F6; color: #FFFFFF;">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <div style="padding: 20px; color: white;">
+                <p>Content below navbar (768px width)</p>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 10px; background: #333; color: white; font-size: 12px;">
+            Tablet 768px
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

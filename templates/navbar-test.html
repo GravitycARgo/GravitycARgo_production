@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Mobile Test - GravitycARgo</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/comprehensive-responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar-mobile-fixes.css') }}">
+    
+    <style>
+        body {
+            padding-top: 80px; /* Account for fixed navbar */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .content-section {
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .test-instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .device-sizes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .device-card {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .device-card h5 {
+            color: #10b981;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-test-notice {
+                background: rgba(34, 197, 94, 0.2);
+                border: 2px solid #22c55e;
+                border-radius: 12px;
+                padding: 1rem;
+                margin: 1rem 0;
+                text-align: center;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-test-notice {
+                background: rgba(245, 158, 11, 0.2);
+                border: 2px solid #f59e0b;
+                border-radius: 12px;
+                padding: 1rem;
+                margin: 1rem 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube logo-icon"></i>
+                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
+            </a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+            >
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features"><i class="fas fa-star"></i> Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works"><i class="fas fa-info-circle"></i> How it Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Mobile Test Notice -->
+        <div class="mobile-test-notice">
+            <h4><i class="fas fa-mobile-alt me-2"></i>Mobile Navbar Test</h4>
+            <p class="mb-0">
+                <span class="d-block d-md-none">
+                    <strong>✅ Mobile View Active:</strong> You should see a hamburger menu button in the navbar. 
+                    Click it to test the collapsible menu functionality.
+                </span>
+                <span class="d-none d-md-block">
+                    <strong>⚠️ Desktop View:</strong> Resize your browser window to less than 768px width 
+                    or use mobile device emulation to test the mobile navbar.
+                </span>
+            </p>
+        </div>
+
+        <!-- Test Instructions -->
+        <div class="test-card">
+            <h2><i class="fas fa-check-circle me-2"></i>Navbar Mobile Test Page</h2>
+            <div class="test-instructions">
+                <h5><i class="fas fa-clipboard-list me-2"></i>Testing Checklist:</h5>
+                <ol>
+                    <li><strong>Hamburger Menu:</strong> Should appear on screens ≤ 768px</li>
+                    <li><strong>Menu Toggle:</strong> Clicking hamburger should open/close the menu</li>
+                    <li><strong>No Overlapping:</strong> Logo and hamburger button should not overlap</li>
+                    <li><strong>Menu Items:</strong> Should stack vertically in mobile menu</li>
+                    <li><strong>Click to Close:</strong> Clicking menu items should close the mobile menu</li>
+                    <li><strong>Outside Click:</strong> Clicking outside menu should close it</li>
+                    <li><strong>No Horizontal Scroll:</strong> Page should not scroll horizontally</li>
+                    <li><strong>Text Readability:</strong> All text should be readable at small sizes</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Device Size Reference -->
+        <div class="test-card">
+            <h3><i class="fas fa-devices me-2"></i>Device Size Reference</h3>
+            <div class="device-sizes">
+                <div class="device-card">
+                    <h5>📱 Mobile</h5>
+                    <p>≤ 768px<br>Hamburger Menu</p>
+                </div>
+                <div class="device-card">
+                    <h5>📱 Tablet</h5>
+                    <p>769px - 1023px<br>Horizontal Menu</p>
+                </div>
+                <div class="device-card">
+                    <h5>💻 Desktop</h5>
+                    <p>≥ 1024px<br>Full Menu</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Sections for Scrolling -->
+        <div id="home" class="content-section">
+            <div class="test-card">
+                <h3><i class="fas fa-home me-2"></i>Home Section</h3>
+                <p>This section tests smooth scrolling when clicking navbar links. The navbar should remain fixed at the top while scrolling.</p>
+            </div>
+        </div>
+
+        <div id="features" class="content-section">
+            <div class="test-card">
+                <h3><i class="fas fa-star me-2"></i>Features Section</h3>
+                <p>Testing navbar scroll effects. The navbar background should become more opaque when scrolling.</p>
+            </div>
+        </div>
+
+        <div id="how-it-works" class="content-section">
+            <div class="test-card">
+                <h3><i class="fas fa-info-circle me-2"></i>How it Works Section</h3>
+                <p>Navbar should adapt its background and styling based on scroll position.</p>
+            </div>
+        </div>
+
+        <div id="contact" class="content-section">
+            <div class="test-card">
+                <h3><i class="fas fa-envelope me-2"></i>Contact Section</h3>
+                <p>Final test section for navbar functionality and responsiveness.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center py-4" style="margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p>&copy; 2025 GravitycARgo - Mobile Navbar Test Page</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/navbar-mobile-toggle.js') }}"></script>
+    
+    <script>
+        // Additional test logging
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Navbar Mobile Test Page Loaded');
+            console.log('Viewport width:', window.innerWidth);
+            console.log('Mobile navbar should be active at ≤768px');
+            
+            // Log window resize events
+            window.addEventListener('resize', function() {
+                console.log('Window resized to:', window.innerWidth, 'x', window.innerHeight);
+            });
+            
+            // Test navbar elements
+            const navbar = document.querySelector('.navbar');
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            console.log('Navbar elements found:', {
+                navbar: !!navbar,
+                toggler: !!toggler,
+                collapse: !!collapse
+            });
+        });
+    </script>
+</body>
+</html>

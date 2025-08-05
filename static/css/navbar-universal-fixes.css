@@ -1,0 +1,242 @@
+/* 
+ * Navbar Mobile Toggle Universal Fix
+ * Ensures navbar functionality works consistently across all pages
+ */
+
+/* ========================================
+   UNIVERSAL NAVBAR FIXES
+   ======================================== */
+
+/* Ensure navbar toggler is always visible and functional */
+.navbar-toggler {
+  display: block !important;
+  border: none !important;
+  padding: 0.5rem !important;
+  background: transparent !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+  border-radius: 4px !important;
+}
+
+.navbar-toggler:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+/* Navbar toggler icon styling */
+.navbar-toggler i,
+.navbar-toggler .navbar-toggler-icon {
+  color: currentColor !important;
+  font-size: 1.25rem !important;
+  transition: transform 0.3s ease !important;
+}
+
+.navbar-toggler:hover i,
+.navbar-toggler:hover .navbar-toggler-icon {
+  transform: scale(1.1) !important;
+}
+
+/* ========================================
+   MOBILE NAVBAR LAYOUT (768px and down)
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Hide navbar toggler on desktop, show on mobile */
+  .navbar-toggler {
+    display: block !important;
+  }
+  
+  /* Ensure navbar collapse works properly */
+  .navbar-collapse {
+    position: relative !important;
+    width: 100% !important;
+    background: inherit !important;
+    border-radius: 8px !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem 0 !important;
+  }
+  
+  .navbar-collapse.show,
+  .navbar-collapse.collapsing {
+    display: block !important;
+  }
+  
+  .navbar-collapse:not(.show) {
+    display: none !important;
+  }
+  
+  /* Navbar navigation items */
+  .navbar-nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+  
+  .navbar-nav .nav-item {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1rem !important;
+    text-align: left !important;
+    border-radius: 6px !important;
+    margin: 0.125rem 0 !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateX(4px) !important;
+  }
+  
+  /* Get Started button in mobile */
+  .get-started-btn,
+  .navbar-nav .btn {
+    margin: 0.5rem 0 !important;
+    padding: 0.75rem 1.5rem !important;
+    text-align: center !important;
+    width: 100% !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* ========================================
+   DESKTOP NAVBAR (769px and up)
+   ======================================== */
+
+@media (min-width: 769px) {
+  .navbar-toggler {
+    display: none !important;
+  }
+  
+  .navbar-collapse {
+    display: flex !important;
+  }
+  
+  .navbar-nav {
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  
+  .navbar-nav .nav-item {
+    margin: 0 0.5rem !important;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* ========================================
+   SPECIFIC PAGE FIXES
+   ======================================== */
+
+/* Container Visualization Page */
+.container-visualization .navbar-collapse {
+  background: rgba(11, 17, 32, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(91, 118, 243, 0.2) !important;
+}
+
+/* Dashboard Page */
+.dashboard .navbar-collapse {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Report Page */
+.navbar-dark .navbar-collapse {
+  background: rgba(52, 58, 64, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Landing/Index Pages */
+.landing .navbar-collapse,
+.index .navbar-collapse {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* ========================================
+   BOOTSTRAP COMPATIBILITY
+   ======================================== */
+
+/* Ensure Bootstrap collapse functionality works */
+.collapse:not(.show) {
+  display: none;
+}
+
+.collapse.show {
+  display: block;
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+/* ========================================
+   ACCESSIBILITY IMPROVEMENTS
+   ======================================== */
+
+/* Focus visible for keyboard navigation */
+.navbar-toggler:focus-visible {
+  outline: 2px solid var(--primary, #3b82f6) !important;
+  outline-offset: 2px !important;
+}
+
+.navbar-nav .nav-link:focus-visible {
+  outline: 2px solid var(--primary, #3b82f6) !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen reader text for hamburger menu */
+.navbar-toggler .sr-only,
+.navbar-toggler .visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ========================================
+   JAVASCRIPT FALLBACK SUPPORT
+   ======================================== */
+
+/* Manual toggle support if Bootstrap JS fails */
+.navbar-collapse.manual-show {
+  display: block !important;
+}
+
+.navbar-collapse.manual-hide {
+  display: none !important;
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Reduce repaints and improve performance */
+.navbar-collapse {
+  will-change: height, opacity;
+}
+
+.navbar-toggler {
+  will-change: transform, background-color;
+}
+
+.navbar-nav .nav-link {
+  will-change: transform, background-color;
+}
