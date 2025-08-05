@@ -1,0 +1,355 @@
+{
+  "config": {
+    "configFile": "D:\\Project\\Kroolo\\GravitycARgo_production\\playwright.config.ts",
+    "rootDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Microsoft Edge",
+        "name": "Microsoft Edge",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/Project/Kroolo/GravitycARgo_production/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Google Chrome",
+        "name": "Google Chrome",
+        "testDir": "D:/Project/Kroolo/GravitycARgo_production/tests/playwright",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 4,
+    "webServer": {
+      "command": "python app_modular.py",
+      "url": "http://localhost:5000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "file-upload-debug-test.spec.ts",
+      "file": "file-upload-debug-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "File Upload Debug Test",
+          "file": "file-upload-debug-test.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should properly upload file and debug filename error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 25987,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📁 Using CSV file: D:\\Project\\Kroolo\\GravitycARgo_production\\input\\inventory_data_utf8.csv\n"
+                        },
+                        {
+                          "text": "📋 Starting comprehensive multi-step test...\n"
+                        },
+                        {
+                          "text": "🚨 Console Error: Failed to load resource: the server responded with a status of 404 (NOT FOUND)\n"
+                        },
+                        {
+                          "text": "✅ Step 1 loaded\n"
+                        },
+                        {
+                          "text": "✅ Road transport selected\n"
+                        },
+                        {
+                          "text": "✅ Step 1 → Step 2 navigation successful\n"
+                        },
+                        {
+                          "text": "✅ Container selected\n"
+                        },
+                        {
+                          "text": "✅ Step 2 → Step 3 navigation successful\n"
+                        },
+                        {
+                          "text": "🔍 DEBUG: Starting file upload process...\n"
+                        },
+                        {
+                          "text": "✅ Upload zone found\n"
+                        },
+                        {
+                          "text": "✅ Upload zone is visible\n"
+                        },
+                        {
+                          "text": "✅ File input found\n"
+                        },
+                        {
+                          "text": "📁 Uploading file: D:\\Project\\Kroolo\\GravitycARgo_production\\input\\inventory_data_utf8.csv\n"
+                        },
+                        {
+                          "text": "📋 File preview visible: true\n"
+                        },
+                        {
+                          "text": "📄 File: inventory_data_utf8.csv, Size: 1.24 KB\n"
+                        },
+                        {
+                          "text": "▶️ Next button enabled: true\n"
+                        },
+                        {
+                          "text": "✅ Step 3 → Step 4 navigation successful\n"
+                        },
+                        {
+                          "text": "🚀 Testing Step 4 optimization...\n"
+                        },
+                        {
+                          "text": "🎯 Found 1 optimization buttons\n"
+                        },
+                        {
+                          "text": "⏯️ Clicking \"Start Optimization\" button...\n"
+                        },
+                        {
+                          "text": "📡 Optimization response: 200 OK\n"
+                        },
+                        {
+                          "text": "🚨 Console Error: Failed to load resource: the server responded with a status of 404 (NOT FOUND)\n"
+                        },
+                        {
+                          "text": "📍 Final URL: http://localhost:5000/optimize\n"
+                        },
+                        {
+                          "text": "📋 Page title: 3D Container Cargo Visualization Dashboard\n"
+                        },
+                        {
+                          "text": "⚠️ Some error present but not filename error\n"
+                        },
+                        {
+                          "text": "\n📋 SUMMARY:\n"
+                        },
+                        {
+                          "text": "📝 Console messages: 12\n"
+                        },
+                        {
+                          "text": "🌐 Network errors: 0\n"
+                        },
+                        {
+                          "text": "\n📝 Console messages:\n"
+                        },
+                        {
+                          "text": "1. [log] Step 1 - Transport Mode Selection loaded\n"
+                        },
+                        {
+                          "text": "2. [error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)\n"
+                        },
+                        {
+                          "text": "3. [log] Transport option clicked: 1\n"
+                        },
+                        {
+                          "text": "4. [log] Transport mode input set to: 1\n"
+                        },
+                        {
+                          "text": "5. [log] Step 2 - Container Selection loaded\n"
+                        },
+                        {
+                          "text": "6. [log] Loading container options for transport mode: 1\n"
+                        },
+                        {
+                          "text": "7. [log] Added 9 container options\n"
+                        },
+                        {
+                          "text": "8. [log] Container selected: Twenty-foot\n"
+                        },
+                        {
+                          "text": "9. [log] Step 3 - File Upload loaded\n"
+                        },
+                        {
+                          "text": "10. [log] Step 4 - Settings & Review loaded\n"
+                        },
+                        {
+                          "text": "11. [warning] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation\n"
+                        },
+                        {
+                          "text": "12. [error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)\n"
+                        },
+                        {
+                          "text": "✅ File upload debug test completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-05T08:20:23.336Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "17cf2b17828c31d038fd-d06972ea913cc6964d6c",
+              "file": "file-upload-debug-test.spec.ts",
+              "line": 4,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-05T08:20:21.222Z",
+    "duration": 28990.178,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

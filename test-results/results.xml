@@ -1,0 +1,53 @@
+<testsuites id="" name="" tests="1" failures="0" skipped="0" errors="0" time="28.990178">
+<testsuite name="file-upload-debug-test.spec.ts" timestamp="2025-08-05T08:20:21.942Z" hostname="chromium" tests="1" failures="0" skipped="0" time="25.987" errors="0">
+<testcase name="File Upload Debug Test › should properly upload file and debug filename error" classname="file-upload-debug-test.spec.ts" time="25.987">
+<system-out>
+<![CDATA[📁 Using CSV file: D:\Project\Kroolo\GravitycARgo_production\input\inventory_data_utf8.csv
+📋 Starting comprehensive multi-step test...
+🚨 Console Error: Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+✅ Step 1 loaded
+✅ Road transport selected
+✅ Step 1 → Step 2 navigation successful
+✅ Container selected
+✅ Step 2 → Step 3 navigation successful
+🔍 DEBUG: Starting file upload process...
+✅ Upload zone found
+✅ Upload zone is visible
+✅ File input found
+📁 Uploading file: D:\Project\Kroolo\GravitycARgo_production\input\inventory_data_utf8.csv
+📋 File preview visible: true
+📄 File: inventory_data_utf8.csv, Size: 1.24 KB
+▶️ Next button enabled: true
+✅ Step 3 → Step 4 navigation successful
+🚀 Testing Step 4 optimization...
+🎯 Found 1 optimization buttons
+⏯️ Clicking "Start Optimization" button...
+📡 Optimization response: 200 OK
+🚨 Console Error: Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+📍 Final URL: http://localhost:5000/optimize
+📋 Page title: 3D Container Cargo Visualization Dashboard
+⚠️ Some error present but not filename error
+
+📋 SUMMARY:
+📝 Console messages: 12
+🌐 Network errors: 0
+
+📝 Console messages:
+1. [log] Step 1 - Transport Mode Selection loaded
+2. [error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+3. [log] Transport option clicked: 1
+4. [log] Transport mode input set to: 1
+5. [log] Step 2 - Container Selection loaded
+6. [log] Loading container options for transport mode: 1
+7. [log] Added 9 container options
+8. [log] Container selected: Twenty-foot
+9. [log] Step 3 - File Upload loaded
+10. [log] Step 4 - Settings & Review loaded
+11. [warning] cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+12. [error] Failed to load resource: the server responded with a status of 404 (NOT FOUND)
+✅ File upload debug test completed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

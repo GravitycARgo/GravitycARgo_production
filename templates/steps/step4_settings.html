@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 4: Settings & Review | GravitycARgo</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
+    
+    <style>
+        /* Step-specific styles */
+        .step-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .step-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .progress-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar-custom {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent));
+            width: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .step-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .navigation-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        
+        .btn-step {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            margin-left: 1rem;
+        }
+        
+        .btn-step.btn-prev {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-step.btn-optimize {
+            background: linear-gradient(135deg, var(--accent), #ff9500);
+            color: white;
+            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+        }
+        
+        .btn-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .temperature-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .temp-slider {
+            flex: 1;
+            height: 6px;
+            background: linear-gradient(to right, #00f, #0f0, #f00);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .temp-value {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            min-width: 60px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .algorithm-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .algorithm-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .algorithm-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        .algorithm-option.selected {
+            border-color: var(--accent);
+            background: rgba(255, 119, 119, 0.1);
+        }
+        
+        .algorithm-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .algorithm-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .algorithm-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .constraint-sliders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .constraint-slider-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .slider-value {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .constraint-slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .review-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .summary-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        .summary-value {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .route-temp-section {
+            position: relative;
+        }
+        
+        .route-temp-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent));
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .route-temp-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .route-temp-status {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .route-temp-status.loading {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            display: block;
+        }
+        
+        .route-temp-status.success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            display: block;
+        }
+        
+        .route-temp-status.error {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="optimizer-page">
+    <!-- 3D Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-pyramid"></div>
+        <div class="floating-sphere"></div>
+        <div class="gradient-blob"></div>
+        <div class="gradient-blob blob-secondary"></div>
+    </div>
+
+    <!-- Animated Background Grid -->
+    <div class="background-grid">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube logo-icon"></i>
+                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="step-container">
+        <div class="container">
+            <div class="step-content">
+                <!-- Progress Indicator -->
+                <div class="progress-indicator" data-aos="fade-down">
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="step-info">
+                        <strong>Step 4 of 4:</strong> Settings & Review
+                    </div>
+                </div>
+
+                <!-- Main Card -->
+                <div class="wizard-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="card-glow"></div>
+                    
+                    <!-- Header -->
+                    <div class="optimizer-header text-center">
+                        <div class="tech-badge" data-aos="fade-down">
+                            <i class="fas fa-cog"></i>
+                            Final Configuration
+                        </div>
+                        <h1 class="optimizer-title" data-aos="fade-down" data-aos-delay="100">
+                            Optimize Your Container
+                        </h1>
+                        <p class="optimizer-subtitle" data-aos="fade-down" data-aos-delay="200">
+                            Fine-tune settings and review your configuration before optimization
+                        </p>
+                    </div>
+
+                    <!-- Settings Form -->
+                    <form id="step4Form" method="post" action="/optimize">
+                        <!-- Hidden inputs from previous steps -->
+                        <input type="hidden" id="transport_mode" name="transport_mode" value="{{ transport_mode }}">
+                        <input type="hidden" id="container_type" name="container_type" value="{{ container_type }}">
+                        <input type="hidden" id="length" name="length" value="{{ length }}">
+                        <input type="hidden" id="width" name="width" value="{{ width }}">
+                        <input type="hidden" id="height" name="height" value="{{ height }}">
+                        <input type="hidden" id="file_data" name="file_data" value="{{ file_data }}">
+                        
+                        <!-- Settings Grid -->
+                        <div class="settings-grid" data-aos="fade-up" data-aos-delay="400">
+                            <!-- Route Settings -->
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-route"></i>
+                                    Route Settings
+                                </h3>
+                                
+                                <div class="form-group route-temp-section">
+                                    <label class="form-label">Route Temperature (°C)</label>
+                                    <div class="temperature-controls">
+                                        <input type="range" id="temp_slider" class="temp-slider" min="-40" max="70" value="20" step="1">
+                                        <div class="temp-value" id="tempTooltip">20°C</div>
+                                    </div>
+                                    <input type="hidden" id="route_temperature" name="route_temperature" value="20">
+                                    <button type="button" class="route-temp-button" id="calculateRouteTemp">
+                                        <i class="fas fa-calculator"></i>
+                                        Auto-Calculate Route Temperature
+                                    </button>
+                                    <div class="route-temp-status" id="routeTempStatus"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Algorithm Selection -->
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-brain"></i>
+                                    Optimization Algorithm
+                                </h3>
+                                
+                                <input type="hidden" id="optimization_algorithm" name="optimization_algorithm" value="genetic">
+                                
+                                <div class="algorithm-selection">
+                                    <div class="algorithm-option selected" data-algorithm="genetic">
+                                        <i class="fas fa-dna algorithm-icon"></i>
+                                        <div class="algorithm-name">Genetic Algorithm</div>
+                                        <div class="algorithm-description">Advanced AI-powered optimization</div>
+                                    </div>
+                                    <div class="algorithm-option" data-algorithm="heuristic">
+                                        <i class="fas fa-lightbulb algorithm-icon"></i>
+                                        <div class="algorithm-name">Heuristic</div>
+                                        <div class="algorithm-description">Fast and efficient packing</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Constraint Sliders -->
+                        <div class="settings-section" data-aos="fade-up" data-aos-delay="500">
+                            <h3 class="section-title">
+                                <i class="fas fa-sliders-h"></i>
+                                Optimization Priorities
+                            </h3>
+                            
+                            <div class="constraint-sliders">
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Volume Utilization</span>
+                                        <span class="slider-value" id="volume_value">75%</span>
+                                    </div>
+                                    <input type="range" id="volume_weight" name="volume_weight" class="constraint-slider" min="0" max="100" value="75" step="1">
+                                </div>
+                                
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Stability</span>
+                                        <span class="slider-value" id="stability_value">50%</span>
+                                    </div>
+                                    <input type="range" id="stability_weight" name="stability_weight" class="constraint-slider" min="0" max="100" value="50" step="1">
+                                </div>
+                                
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Contact Ratio</span>
+                                        <span class="slider-value" id="contact_value">50%</span>
+                                    </div>
+                                    <input type="range" id="contact_weight" name="contact_weight" class="constraint-slider" min="0" max="100" value="50" step="1">
+                                </div>
+                                
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Weight Balance</span>
+                                        <span class="slider-value" id="balance_value">25%</span>
+                                    </div>
+                                    <input type="range" id="balance_weight" name="balance_weight" class="constraint-slider" min="0" max="100" value="25" step="1">
+                                </div>
+                                
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Items Packed</span>
+                                        <span class="slider-value" id="items_packed_value">25%</span>
+                                    </div>
+                                    <input type="range" id="items_packed_weight" name="items_packed_weight" class="constraint-slider" min="0" max="100" value="25" step="1">
+                                </div>
+                                
+                                <div class="constraint-slider-item">
+                                    <div class="slider-label">
+                                        <span>Temperature Constraint</span>
+                                        <span class="slider-value" id="temperature_value">30%</span>
+                                    </div>
+                                    <input type="range" id="temperature_weight" name="temperature_weight" class="constraint-slider" min="0" max="100" value="30" step="1">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Review Summary -->
+                        <div class="review-summary" data-aos="fade-up" data-aos-delay="600">
+                            <h3 class="section-title">
+                                <i class="fas fa-clipboard-check"></i>
+                                Configuration Summary
+                            </h3>
+                            
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <span class="summary-label">Transport Mode:</span>
+                                    <span class="summary-value" id="reviewTransportMode">{{ get_transport_name(step_data.transport_mode) if step_data.transport_mode else 'Not selected' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Container Type:</span>
+                                    <span class="summary-value" id="reviewContainerType">{{ step_data.container_type if step_data.container_type else 'Custom' if step_data.transport_mode == '5' else 'Not selected' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Dimensions:</span>
+                                    <span class="summary-value" id="reviewDimensions">
+                                        {% if step_data.length and step_data.width and step_data.height %}
+                                            {{ step_data.length }}m × {{ step_data.width }}m × {{ step_data.height }}m
+                                        {% elif step_data.container_type %}
+                                            Standard container dimensions
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">File:</span>
+                                    <span class="summary-value" id="reviewFileName">{{ step_data.file_name if step_data.file_name else 'No file uploaded' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">File Size:</span>
+                                    <span class="summary-value" id="reviewFileSize">
+                                        {% if step_data.file_size %}
+                                            {{ (step_data.file_size / 1024) | round(1) }} KB
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Total Rows:</span>
+                                    <span class="summary-value" id="reviewTotalRows">{{ step_data.total_rows if step_data.total_rows else '-' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Route Temperature:</span>
+                                    <span class="summary-value" id="reviewRouteTemperature">{{ step_data.route_temperature + '°C' if step_data.route_temperature else '20°C (default)' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Algorithm:</span>
+                                    <span class="summary-value" id="reviewAlgorithm">{{ step_data.optimization_algorithm.title() if step_data.optimization_algorithm else 'Genetic Algorithm' }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Ready to Optimize:</span>
+                                    <span class="summary-value" style="color: #28a745;">✓ Yes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+        <button type="button" class="btn-step btn-prev" onclick="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>
+            Previous
+        </button>
+        <button type="button" class="btn-step btn-optimize" onclick="startOptimization()">
+            <i class="fas fa-rocket me-2"></i>
+            Start Optimization
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <h3 class="loading-text">Optimizing Container</h3>
+            <p class="loading-status" id="loadingStatus">Analyzing item dimensions and constraints...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            offset: 100,
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Step 4 - Settings & Review loaded");
+            
+            // Load data from previous steps
+            loadPreviousStepData();
+            
+            // Initialize form controls
+            initTemperatureSlider();
+            initAlgorithmSelection();
+            initConstraintSliders();
+            initRouteTemperatureCalculator();
+            
+            // Update review summary
+            updateReviewSummary();
+        });
+        
+        function loadPreviousStepData() {
+            const transportModeInput = document.getElementById('transport_mode');
+            const containerTypeInput = document.getElementById('container_type');
+            const lengthInput = document.getElementById('length');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            
+            // Load from session storage if not provided by server
+            if (!transportModeInput.value) {
+                transportModeInput.value = sessionStorage.getItem('step2_transport_mode') || sessionStorage.getItem('step1_transport_mode');
+            }
+            
+            if (!containerTypeInput.value) {
+                containerTypeInput.value = sessionStorage.getItem('step2_container_type');
+            }
+            
+            // Load custom dimensions if applicable
+            if (transportModeInput.value === '5') {
+                if (!lengthInput.value) lengthInput.value = sessionStorage.getItem('step2_length');
+                if (!widthInput.value) widthInput.value = sessionStorage.getItem('step2_width');
+                if (!heightInput.value) heightInput.value = sessionStorage.getItem('step2_height');
+            }
+        }
+        
+        function initTemperatureSlider() {
+            const tempSlider = document.getElementById('temp_slider');
+            const tempTooltip = document.getElementById('tempTooltip');
+            const routeTemperatureInput = document.getElementById('route_temperature');
+            
+            if (tempSlider && tempTooltip && routeTemperatureInput) {
+                tempSlider.addEventListener('input', function() {
+                    const value = this.value;
+                    tempTooltip.textContent = value + '°C';
+                    routeTemperatureInput.value = value;
+                    updateReviewSummary();
+                });
+            }
+        }
+        
+        function initAlgorithmSelection() {
+            const algorithmOptions = document.querySelectorAll('.algorithm-option');
+            const algorithmInput = document.getElementById('optimization_algorithm');
+            
+            algorithmOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    algorithmOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const algorithm = this.getAttribute('data-algorithm');
+                    if (algorithmInput) {
+                        algorithmInput.value = algorithm;
+                    }
+                    updateReviewSummary();
+                });
+            });
+        }
+        
+        function initConstraintSliders() {
+            const sliders = {
+                'volume_weight': 'volume_value',
+                'stability_weight': 'stability_value',
+                'contact_weight': 'contact_value',
+                'balance_weight': 'balance_value',
+                'items_packed_weight': 'items_packed_value',
+                'temperature_weight': 'temperature_value'
+            };
+            
+            Object.entries(sliders).forEach(([sliderId, valueId]) => {
+                const slider = document.getElementById(sliderId);
+                const valueDisplay = document.getElementById(valueId);
+                
+                if (slider && valueDisplay) {
+                    slider.addEventListener('input', function() {
+                        valueDisplay.textContent = this.value + '%';
+                    });
+                }
+            });
+        }
+        
+        function initRouteTemperatureCalculator() {
+            const calculateBtn = document.getElementById('calculateRouteTemp');
+            const statusDiv = document.getElementById('routeTempStatus');
+            
+            if (calculateBtn) {
+                calculateBtn.addEventListener('click', async function() {
+                    console.log('Route temperature calculation clicked');
+                    
+                    // Show loading state
+                    statusDiv.className = 'route-temp-status loading';
+                    statusDiv.textContent = 'Calculating route temperature...';
+                    calculateBtn.disabled = true;
+                    
+                    try {
+                        // Test data for route calculation
+                        const routeData = {
+                            source: "Singapore",
+                            source_coords: [1.3521, 103.8198],
+                            destinations: [
+                                {
+                                    name: "Hong Kong",
+                                    coords: [22.3193, 114.1694]
+                                }
+                            ],
+                            checkpoints: 5,
+                            start_time: new Date().toISOString()
+                        };
+                        
+                        const response = await fetch('/api/calculate_route_temperature', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(routeData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.status === 'success') {
+                            const avgTemp = Math.round(result.average_temperature);
+                            
+                            // Update temperature controls
+                            const tempSlider = document.getElementById('temp_slider');
+                            const tempTooltip = document.getElementById('tempTooltip');
+                            const routeTemperatureInput = document.getElementById('route_temperature');
+                            
+                            if (tempSlider) tempSlider.value = avgTemp;
+                            if (tempTooltip) tempTooltip.textContent = avgTemp + '°C';
+                            if (routeTemperatureInput) routeTemperatureInput.value = avgTemp;
+                            
+                            // Show success
+                            statusDiv.className = 'route-temp-status success';
+                            statusDiv.textContent = `Temperature set to ${avgTemp}°C`;
+                            
+                            updateReviewSummary();
+                        } else {
+                            throw new Error(result.message || 'Failed to calculate route temperature');
+                        }
+                    } catch (error) {
+                        console.error('Route temperature calculation error:', error);
+                        statusDiv.className = 'route-temp-status error';
+                        statusDiv.textContent = 'Error calculating temperature. Using default value.';
+                    } finally {
+                        calculateBtn.disabled = false;
+                        setTimeout(() => {
+                            statusDiv.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            }
+        }
+        
+        function updateReviewSummary() {
+            const transportNames = {
+                '1': 'Road Transport',
+                '2': 'Sea Transport', 
+                '3': 'Air Transport',
+                '4': 'Rail Transport',
+                '5': 'Custom Container'
+            };
+            
+            const algorithmNames = {
+                'genetic': 'Genetic Algorithm',
+                'heuristic': 'Heuristic Algorithm'
+            };
+            
+            // Update transport mode
+            const transportMode = document.getElementById('transport_mode').value;
+            const reviewTransportMode = document.getElementById('reviewTransportMode');
+            if (reviewTransportMode) {
+                reviewTransportMode.textContent = transportNames[transportMode] || 'Not selected';
+            }
+            
+            // Update container type
+            const containerType = document.getElementById('container_type').value;
+            const reviewContainerType = document.getElementById('reviewContainerType');
+            if (reviewContainerType) {
+                if (transportMode === '5') {
+                    const length = document.getElementById('length').value;
+                    const width = document.getElementById('width').value;
+                    const height = document.getElementById('height').value;
+                    reviewContainerType.textContent = `Custom (${length}×${width}×${height}m)`;
+                } else {
+                    reviewContainerType.textContent = containerType || 'Not selected';
+                }
+            }
+            
+            // Update file name
+            const reviewFileName = document.getElementById('reviewFileName');
+            if (reviewFileName) {
+                const fileName = sessionStorage.getItem('step3_file_name');
+                reviewFileName.textContent = fileName || 'No file uploaded';
+            }
+            
+            // Update route temperature
+            const routeTemperature = document.getElementById('route_temperature').value;
+            const reviewRouteTemperature = document.getElementById('reviewRouteTemperature');
+            if (reviewRouteTemperature) {
+                reviewRouteTemperature.textContent = routeTemperature + '°C';
+            }
+            
+            // Update algorithm
+            const algorithm = document.getElementById('optimization_algorithm').value;
+            const reviewAlgorithm = document.getElementById('reviewAlgorithm');
+            if (reviewAlgorithm) {
+                reviewAlgorithm.textContent = algorithmNames[algorithm] || 'Not selected';
+            }
+        }
+
+        function goBack() {
+            window.location.href = '/step3';
+        }
+
+        function startOptimization() {
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingStatus = document.getElementById('loadingStatus');
+            
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                
+                // Update status messages
+                const messages = [
+                    'Analyzing item dimensions and constraints...',
+                    'Initializing genetic algorithm...',
+                    'Optimizing container layout...',
+                    'Calculating stability metrics...',
+                    'Finalizing optimization results...'
+                ];
+                
+                let messageIndex = 0;
+                const messageInterval = setInterval(() => {
+                    if (messageIndex < messages.length) {
+                        if (loadingStatus) {
+                            loadingStatus.textContent = messages[messageIndex];
+                        }
+                        messageIndex++;
+                    } else {
+                        clearInterval(messageInterval);
+                    }
+                }, 2000);
+            }
+            
+            // Submit the form
+            setTimeout(() => {
+                document.getElementById('step4Form').submit();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

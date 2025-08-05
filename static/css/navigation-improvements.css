@@ -1,0 +1,89 @@
+/* Navigation Flow Improvements */
+
+/* Ensure smooth navigation flow from navbar to content */
+.optimizer-container {
+  /* Smooth scroll behavior for better navigation */
+  scroll-behavior: smooth;
+}
+
+/* Improve navbar positioning for optimization page */
+body.optimizer-page {
+  scroll-behavior: smooth;
+}
+
+/* Ensure proper spacing after fixed navbar */
+.navbar + main {
+  margin-top: 0; /* Remove any unwanted margin after navbar */
+}
+
+/* Progress steps should be prominently visible */
+.progress-steps {
+  /* Ensure progress steps are easily visible and accessible */
+  position: relative;
+  z-index: 10;
+  margin-bottom: 1.5rem;
+}
+
+/* Make sure the first step content is immediately visible */
+.form-section[data-step="1"] {
+  /* Ensure first step starts prominently */
+  margin-top: 0;
+}
+
+/* Prevent unwanted scrolling on focus */
+.transport-option:focus,
+.container-option:focus {
+  scroll-margin: 0;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Prevent browser auto-scroll on form element focus */
+input:focus,
+select:focus,
+button:focus {
+  scroll-margin: 0;
+}
+
+/* Ensure form sections don't cause unwanted scrolling */
+.form-section {
+  scroll-margin: 0;
+}
+
+/* Disable scroll anchoring that might cause jumps */
+.wizard-card {
+  overflow-anchor: none;
+}
+
+/* Responsive adjustments for better navigation flow */
+@media (max-width: 768px) {
+  .optimizer-container {
+    padding-top: 1rem; /* Even less padding on mobile */
+  }
+  
+  .optimizer-header {
+    margin-bottom: 1rem; /* Tighter spacing on mobile */
+  }
+  
+  .wizard-card {
+    padding: 1.5rem 1rem; /* More compact on mobile */
+    margin-bottom: 1rem;
+  }
+}
+
+/* Smooth focus management for accessibility */
+.transport-option:focus,
+.step:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Ensure proper keyboard navigation */
+.progress-steps .step {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.progress-steps .step:hover {
+  transform: translateY(-2px);
+}

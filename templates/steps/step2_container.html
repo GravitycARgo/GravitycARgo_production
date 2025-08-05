@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2: Container Selection | GravitycARgo</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
+    
+    <style>
+        /* Step-specific styles */
+        .step-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        
+        .step-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .progress-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar-custom {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent));
+            width: 50%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .step-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .navigation-buttons {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        
+        .btn-step {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            border: none;
+            margin-left: 1rem;
+        }
+        
+        .btn-step.btn-prev {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-step.btn-next {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent));
+            color: white;
+        }
+        
+        .btn-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn-step:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Custom dimensions section */
+        .custom-dimensions {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dimension-input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .dimension-field {
+            position: relative;
+        }
+        
+        .dimension-field label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        .dimension-field input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .dimension-field input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+        
+        .dimension-field .unit {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 1.25rem;
+        }
+        
+        /* 3D Container Visualization */
+        .container-3d-visual {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            margin-bottom: 1rem;
+        }
+        
+        .container-model {
+            position: relative;
+            transform-style: preserve-3d;
+            width: 80px;
+            height: 60px;
+            animation: rotateContainer 6s ease-in-out infinite;
+        }
+        
+        @keyframes rotateContainer {
+            0%, 100% { transform: rotateX(-15deg) rotateY(25deg); }
+            50% { transform: rotateX(-15deg) rotateY(35deg); }
+        }
+        
+        .container-face {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.8), rgba(126, 58, 242, 0.8));
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        .container-face.front {
+            width: 80px;
+            height: 60px;
+            transform: translateZ(40px);
+        }
+        
+        .container-face.back {
+            width: 80px;
+            height: 60px;
+            transform: translateZ(0px);
+        }
+        
+        .container-face.right {
+            width: 40px;
+            height: 60px;
+            transform: rotateY(90deg) translateZ(40px);
+        }
+        
+        .container-face.left {
+            width: 40px;
+            height: 60px;
+            transform: rotateY(-90deg) translateZ(40px);
+        }
+        
+        .container-face.top {
+            width: 80px;
+            height: 40px;
+            transform: rotateX(90deg) translateZ(60px);
+        }
+        
+        .container-face.bottom {
+            width: 80px;
+            height: 40px;
+            transform: rotateX(-90deg) translateZ(0px);
+        }
+        
+        /* Container Option Enhancements */
+        .container-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(74, 144, 226, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .container-option.selected {
+            border-color: var(--accent);
+            background: rgba(255, 119, 119, 0.1);
+            box-shadow: 0 0 30px rgba(255, 119, 119, 0.3);
+        }
+        
+        .container-info {
+            text-align: center;
+        }
+        
+        .container-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .spec-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .spec-label {
+            font-weight: 500;
+            color: var(--primary-color);
+            display: block;
+            font-size: 0.8rem;
+        }
+        
+        .spec-value {
+            font-weight: 600;
+            color: white;
+        }
+        
+        /* Container Grid */
+        .container-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .container-face.back {
+            width: 80px;
+            height: 60px;
+            transform: translateZ(-40px) rotateY(180deg);
+        }
+        
+        .container-face.left {
+            width: 80px;
+            height: 60px;
+            transform: rotateY(-90deg) translateZ(40px);
+        }
+        
+        .container-face.right {
+            width: 80px;
+            height: 60px;
+            transform: rotateY(90deg) translateZ(40px);
+        }
+        
+        .container-face.top {
+            width: 80px;
+            height: 80px;
+            transform: rotateX(90deg) translateZ(30px);
+        }
+        
+        .container-face.bottom {
+            width: 80px;
+            height: 80px;
+            transform: rotateX(-90deg) translateZ(30px);
+        }
+        
+        .container-info {
+            text-align: center;
+        }
+        
+        .container-specs {
+            margin-top: 0.5rem;
+        }
+        
+        .spec-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.25rem 0;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .spec-item i {
+            margin-right: 0.5rem;
+            width: 16px;
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body class="optimizer-page">
+    <!-- 3D Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-cube"></div>
+        <div class="floating-pyramid"></div>
+        <div class="floating-sphere"></div>
+        <div class="gradient-blob"></div>
+        <div class="gradient-blob blob-secondary"></div>
+    </div>
+
+    <!-- Animated Background Grid -->
+    <div class="background-grid">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-cube logo-icon"></i>
+                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="step-container">
+        <div class="container">
+            <div class="step-content">
+                <!-- Progress Indicator -->
+                <div class="progress-indicator" data-aos="fade-down">
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <div class="step-info">
+                        <strong>Step 2 of 4:</strong> Container Selection
+                    </div>
+                </div>
+
+                <!-- Main Card -->
+                <div class="wizard-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="card-glow"></div>
+                    
+                    <!-- Header -->
+                    <div class="optimizer-header text-center">
+                        <div class="tech-badge" data-aos="fade-down">
+                            <i class="fas fa-cube"></i>
+                            Container Selection
+                        </div>
+                        <h1 class="optimizer-title" data-aos="fade-down" data-aos-delay="100">
+                            Choose Your Container
+                        </h1>
+                        <p class="optimizer-subtitle" data-aos="fade-down" data-aos-delay="200">
+                            Select the perfect container for your <span id="selectedTransportMode">transport</span> needs
+                        </p>
+                    </div>
+
+                    <!-- Container Selection Form -->
+                    <form id="step2Form" method="post" action="/step2">
+                        <input type="hidden" id="transport_mode" name="transport_mode" value="{{ transport_mode }}">
+                        <input type="hidden" id="container_type" name="container_type">
+                        
+                        <!-- Container Grid -->
+                        <div id="containerGrid" class="container-grid" data-aos="fade-up" data-aos-delay="400">
+                            <!-- Container options will be populated by JavaScript -->
+                        </div>
+                        
+                        <!-- Custom Dimensions Section -->
+                        <div class="custom-dimensions" id="customDimensions" data-aos="fade-up" data-aos-delay="500">
+                            <h3 class="text-center mb-3">
+                                <i class="fas fa-ruler-combined"></i>
+                                Custom Container Dimensions
+                            </h3>
+                            <p class="text-center mb-4">Specify your container dimensions in meters</p>
+                            
+                            <div class="dimension-input-group">
+                                <div class="dimension-field">
+                                    <label for="length">Length</label>
+                                    <input type="number" id="length" name="length" step="0.01" min="0.1" placeholder="12.19">
+                                    <span class="unit">m</span>
+                                </div>
+                                <div class="dimension-field">
+                                    <label for="width">Width</label>
+                                    <input type="number" id="width" name="width" step="0.01" min="0.1" placeholder="2.35">
+                                    <span class="unit">m</span>
+                                </div>
+                                <div class="dimension-field">
+                                    <label for="height">Height</label>
+                                    <input type="number" id="height" name="height" step="0.01" min="0.1" placeholder="2.39">
+                                    <span class="unit">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+        <button type="button" class="btn-step btn-prev" onclick="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>
+            Previous
+        </button>
+        <button type="button" class="btn-step btn-next" id="nextBtn" disabled onclick="proceedToNext()">
+            Next Step
+            <i class="fas fa-arrow-right ms-2"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Hidden data for JavaScript -->
+    <script type="application/json" id="flask-data">{{ data | tojson | safe }}</script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            offset: 100,
+            duration: 600,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Get the data passed from Flask
+        let defaultData;
+        try {
+            const dataElement = document.getElementById('flask-data');
+            defaultData = dataElement ? JSON.parse(dataElement.textContent) : { transport_modes: [] };
+        } catch (e) {
+            console.error('Error parsing Flask data:', e);
+            defaultData = { transport_modes: [] };
+        }
+        
+        // Helper function to categorize container types
+        function getContainerTypeCategory(containerName) {
+            const name = containerName.toLowerCase();
+            if (name.includes('20ft') || name.includes('20-foot')) return 'Standard 20ft';
+            if (name.includes('40ft') || name.includes('40-foot')) return 'Standard 40ft';
+            if (name.includes('45ft') || name.includes('45-foot')) return 'High Cube 45ft';
+            if (name.includes('reefer') || name.includes('refrigerated')) return 'Refrigerated';
+            if (name.includes('tank')) return 'Tank Container';
+            if (name.includes('open') || name.includes('flat')) return 'Open Top';
+            return 'General Purpose';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Step 2 - Container Selection loaded");
+            
+            const transportModeInput = document.getElementById('transport_mode');
+            const containerTypeInput = document.getElementById('container_type');
+            const customDimensions = document.getElementById('customDimensions');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            // Load transport mode from previous step or session storage
+            const transportMode = transportModeInput.value || sessionStorage.getItem('step1_transport_mode');
+            if (transportMode) {
+                transportModeInput.value = transportMode;
+                loadContainerOptions(transportMode);
+                updateTransportModeDisplay(transportMode);
+            }
+            
+            function updateTransportModeDisplay(transportMode) {
+                const transportNames = {
+                    '1': 'Road Transport',
+                    '2': 'Sea Transport', 
+                    '3': 'Air Transport',
+                    '4': 'Rail Transport',
+                    '5': 'Custom Container'
+                };
+                
+                const selectedTransportMode = document.getElementById('selectedTransportMode');
+                if (selectedTransportMode) {
+                    selectedTransportMode.textContent = transportNames[transportMode] || 'transport';
+                }
+            }
+            
+            function loadContainerOptions(transportModeValue) {
+                console.log("Loading container options for transport mode:", transportModeValue);
+                
+                const containerGrid = document.getElementById('containerGrid');
+                if (!containerGrid) {
+                    console.error("Container grid element not found");
+                    return;
+                }
+                
+                containerGrid.innerHTML = "";
+                
+                // Handle custom container dimensions
+                if (transportModeValue === '5') {
+                    customDimensions.style.display = 'block';
+                    nextBtn.disabled = false;
+                    return;
+                } else {
+                    customDimensions.style.display = 'none';
+                }
+                
+                // Find the transport mode data
+                const transportModeData = defaultData.transport_modes.find(mode => mode.id === transportModeValue);
+                
+                if (!transportModeData) {
+                    console.error("Transport mode data not found for ID:", transportModeValue);
+                    return;
+                }
+                
+                transportModeData.containers.forEach((container, index) => {
+                    const containerCard = document.createElement("div");
+                    containerCard.className = "container-option";
+                    containerCard.setAttribute("data-container", container.name);
+                    containerCard.setAttribute("data-aos", "fade-up");
+                    containerCard.setAttribute("data-aos-delay", (600 + index * 100).toString());
+                    
+                    // Calculate container stats
+                    const volume = (container.dimensions[0] * container.dimensions[1] * container.dimensions[2]).toFixed(1);
+                    const aspectRatio = container.dimensions[0] / container.dimensions[1];
+                    const maxWeight = container.max_weight || 30000;
+                    
+                    containerCard.innerHTML = `
+                        <div class="container-3d-visual">
+                            <div class="container-model" style="
+                                --length: ${container.dimensions[0]}; 
+                                --width: ${container.dimensions[1]}; 
+                                --height: ${container.dimensions[2]};
+                                transform: rotateX(-15deg) rotateY(25deg);
+                            ">
+                                <div class="container-face front"></div>
+                                <div class="container-face back"></div>
+                                <div class="container-face left"></div>
+                                <div class="container-face right"></div>
+                                <div class="container-face top"></div>
+                                <div class="container-face bottom"></div>
+                            </div>
+                        </div>
+                        <div class="container-info">
+                            <i class="fas fa-cube container-icon"></i>
+                            <div class="container-name">${container.name}</div>
+                            <div class="container-specs">
+                                <div class="spec-item">
+                                    <i class="fas fa-ruler-combined"></i>
+                                    <span>${container.dimensions[0]}m × ${container.dimensions[1]}m × ${container.dimensions[2]}m</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-cube"></i>
+                                    <span>${volume} m³</span>
+                                </div>
+                                <div class="spec-item">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <span>${(maxWeight/1000).toFixed(1)}t capacity</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-check">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    `;
+                    
+                    containerCard.addEventListener("click", function () {
+                        document.querySelectorAll(".container-option").forEach((card) => {
+                            card.classList.remove("active", "selected");
+                        });
+                        this.classList.add("active", "selected");
+                        
+                        if (containerTypeInput) {
+                            containerTypeInput.value = container.name;
+                        }
+                        console.log("Container selected:", container.name);
+                        
+                        // Enable next button
+                        if (nextBtn) {
+                            nextBtn.disabled = false;
+                        }
+                    });
+                    
+                    containerGrid.appendChild(containerCard);
+                });
+                
+                console.log("Added", transportModeData.containers.length, "container options");
+                
+                // Reinitialize AOS for new elements
+                AOS.refresh();
+            }
+            
+            // Custom dimensions validation for transport mode 5
+            if (transportModeInput.value === '5') {
+                const dimensionInputs = ['length', 'width', 'height'];
+                dimensionInputs.forEach(inputId => {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.addEventListener('input', function() {
+                            validateCustomDimensions();
+                        });
+                    }
+                });
+            }
+            
+            function validateCustomDimensions() {
+                const length = document.getElementById('length');
+                const width = document.getElementById('width');
+                const height = document.getElementById('height');
+                
+                const hasAllValues = length.value && width.value && height.value;
+                const areValidNumbers = hasAllValues && 
+                    parseFloat(length.value) > 0 && 
+                    parseFloat(width.value) > 0 && 
+                    parseFloat(height.value) > 0;
+                
+                nextBtn.disabled = !areValidNumbers;
+            }
+        });
+
+        function goBack() {
+            window.location.href = '/step1';
+        }
+
+        function proceedToNext() {
+            const transportMode = document.getElementById('transport_mode');
+            const containerType = document.getElementById('container_type');
+            
+            if (!transportMode || !transportMode.value) {
+                alert('Transport mode not found');
+                return;
+            }
+            
+            // Validation for custom container
+            if (transportMode.value === '5') {
+                const length = document.getElementById('length');
+                const width = document.getElementById('width');
+                const height = document.getElementById('height');
+                
+                if (!length.value || !width.value || !height.value) {
+                    alert('Please enter all custom container dimensions');
+                    return;
+                }
+                
+                // Store custom dimensions
+                sessionStorage.setItem('step2_length', length.value);
+                sessionStorage.setItem('step2_width', width.value);
+                sessionStorage.setItem('step2_height', height.value);
+            } else {
+                // Validation for predefined containers
+                if (!containerType || !containerType.value) {
+                    alert('Please select a container type');
+                    return;
+                }
+                
+                // Store container selection
+                sessionStorage.setItem('step2_container_type', containerType.value);
+            }
+            
+            // Store transport mode for next step
+            sessionStorage.setItem('step2_transport_mode', transportMode.value);
+            
+            // Submit form to next step
+            document.getElementById('step2Form').submit();
+        }
+    </script>
+</body>
+</html>

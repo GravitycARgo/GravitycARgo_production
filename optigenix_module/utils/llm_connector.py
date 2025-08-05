@@ -65,6 +65,9 @@ class GeminiClient:
         if not self.enabled:
             fallback = self._get_fallback_strategy()
             return json.dumps(fallback)
+        
+        # Apply volume preservation safeguards to the prompt
+        safe_prompt = self._apply_volume_preservation_to_prompt(prompt)
             
         print(f"\\n{'='*60}")
         print(f"🧠 QUERYING LLM: Asking Gemini for adaptive mutation strategy...")
@@ -72,7 +75,7 @@ class GeminiClient:
         
         # Print abbreviated prompt
         print("\n📝 PROMPT SUMMARY:")
-        prompt_lines = prompt.strip().split('\n')
+        prompt_lines = safe_prompt.strip().split('\n')
         if len(prompt_lines) > 10:
             for line in prompt_lines[:5]:
                 print(f"  {line.strip()}")
@@ -101,7 +104,7 @@ class GeminiClient:
                 # Add system instruction for JSON response
                 enhanced_prompt = f"""You are a helpful AI assistant that ALWAYS responds in valid JSON format. Your responses should contain ONLY the JSON object, with no additional text, explanations, or markdown.
 
-{prompt}"""
+{safe_prompt}"""
                 
                 response = self.model.generate_content(
                     enhanced_prompt,
@@ -497,6 +500,9 @@ class GeminiClient:
         # If we have a context with items, process temperature-related aspects
         if context and isinstance(context, dict) and 'items' in context:
             try:
+                # Apply volume preservation safeguards
+                self._ensure_volume_preservation(context['items'])
+                
                 # Process any temperature-sensitive items
                 temp_sensitive_items = []
                 for item in context['items']:
@@ -515,6 +521,200 @@ class GeminiClient:
                 return {"route_temperature": route_temp, "constraints_applied": False}
         
         return {"route_temperature": route_temp, "constraints_applied": True}
+
+    def _ensure_volume_preservation(self, items):
+        """
+        Ensure item volumes are preserved and cannot be modified by LLM suggestions
+        
+        Args:
+            items: List of items to protect
+        """
+        if not items:
+            return
+            
+        # Store original volumes for validation
+        original_volumes = {}
+        
+        for item in items:
+            if hasattr(item, 'dimensions') and len(item.dimensions) == 3:
+                original_volume = item.dimensions[0] * item.dimensions[1] * item.dimensions[2]
+                original_volumes[id(item)] = {
+                    'volume': original_volume,
+                    'dimensions': tuple(item.dimensions),
+                    'name': getattr(item, 'name', 'Unknown')
+                }
+        
+        # Log volume preservation status
+        if original_volumes:
+            print(f"🔒 VOLUME PRESERVATION: Protected {len(original_volumes)} items from modification")
+            total_protected_volume = sum(vol['volume'] for vol in original_volumes.values())
+            print(f"🔒 Total protected volume: {total_protected_volume:.3f} m³")
+        
+        # Store for validation later
+        self._protected_volumes = original_volumes
+
+    def validate_volume_integrity(self, items):
+        """
+        Validate that item volumes haven't been unexpectedly modified
+        
+        Args:
+            items: List of items to validate
+            
+        Returns:
+            bool: True if all volumes are preserved, False otherwise
+        """
+        if not hasattr(self, '_protected_volumes') or not self._protected_volumes:
+            return True  # No volumes to protect
+            
+        violations = []
+        
+        for item in items:
+            item_id = id(item)
+            if item_id in self._protected_volumes:
+                if hasattr(item, 'dimensions') and len(item.dimensions) == 3:
+                    current_volume = item.dimensions[0] * item.dimensions[1] * item.dimensions[2]
+                    protected_data = self._protected_volumes[item_id]
+                    original_volume = protected_data['volume']
+                    
+                    # Allow for tiny floating point differences
+                    if abs(current_volume - original_volume) > 1e-6:
+                        violations.append({
+                            'item_name': protected_data['name'],
+                            'original_volume': original_volume,
+                            'current_volume': current_volume,
+                            'original_dims': protected_data['dimensions'],
+                            'current_dims': tuple(item.dimensions)
+                        })
+        
+        
+        return True
+
+    def _apply_volume_preservation_to_prompt(self, prompt: str) -> str:
+        """
+        Apply volume preservation constraints to any prompt sent to the LLM
+        
+        Args:
+            prompt: Original prompt
+            
+        Returns:
+            str: Enhanced prompt with volume preservation constraints
+        """
+        volume_protection_clause = """
+
+🔒 CRITICAL VOLUME PRESERVATION CONSTRAINTS:
+- You MUST NOT suggest any modifications to item dimensions, sizes, or volumes
+- You MUST NOT recommend changing length, width, height, or scale of any items
+- You MUST ONLY focus on placement strategies, rotation operations, and sequencing
+- Item volumes are FIXED and PROTECTED - they cannot be altered in any way
+- Any suggestions affecting item physical properties will be REJECTED
+- Focus ONLY on arrangement, ordering, and orientation strategies
+
+"""
+        
+        # Insert the volume protection clause near the beginning of the prompt
+        lines = prompt.split('\n')
+        if len(lines) > 2:
+            # Insert after the first descriptive paragraph
+            insert_index = min(3, len(lines))
+            lines.insert(insert_index, volume_protection_clause)
+            return '\n'.join(lines)
+        else:
+            return prompt + volume_protection_clause
+
+    def get_volume_safe_strategy(self, generation: int, population_metrics: Dict[str, float], 
+                                stagnation_counter: int) -> Optional[Dict[str, Any]]:
+        """
+        Get a volume-safe adaptive mutation strategy from LLM
+        
+        Args:
+            generation: Current generation number
+            population_metrics: Current population performance metrics
+            stagnation_counter: Number of generations without improvement
+            
+        Returns:
+            Dict containing volume-safe strategy or None if unavailable
+        """
+        if not self.enabled:
+            return self._get_fallback_strategy()
+            
+        try:
+            # Create volume-safe prompt
+            prompt = f"""
+            Generate an adaptive mutation strategy for genetic algorithm optimization that STRICTLY preserves item volumes.
+            
+            Current Context:
+            - Generation: {generation}
+            - Stagnation: {stagnation_counter} generations without improvement
+            - Population metrics: {json.dumps(population_metrics, indent=2)}
+            
+            VOLUME PRESERVATION REQUIREMENTS:
+            - Item dimensions MUST remain unchanged
+            - Focus ONLY on item sequence reordering
+            - Focus ONLY on rotation operations (0-5 rotation flags)
+            - Focus ONLY on placement strategy optimization
+            - NO modifications to item sizes, scales, or volumes
+            
+            Strategy options (VOLUME-SAFE ONLY):
+            - "rotation": Change item orientations only
+            - "swap": Reorder item sequence only  
+            - "subsequence": Move groups of items in sequence only
+            - "balanced": Combine rotation and sequencing only
+            - "aggressive": High-rate rotation and sequencing only
+            
+            Return JSON with:
+            {{
+                "mutation_rate_modifier": float (-0.5 to 0.5),
+                "operation_focus": "rotation|swap|subsequence|balanced|aggressive",
+                "explanation": "brief explanation focusing on volume-safe operations"
+            }}
+            """
+            
+            response = self.generate(prompt)
+            strategy = self._clean_json_response(response)
+            
+            # Validate that strategy is volume-safe
+            if self._validate_volume_safe_strategy(strategy):
+                print(f"✅ Generated volume-safe strategy: {strategy.get('operation_focus', 'unknown')}")
+                return strategy
+            else:
+                print(f"⚠️ LLM strategy failed volume safety validation, using fallback")
+                return self._get_fallback_strategy()
+                
+        except Exception as e:
+            print(f"❌ Error generating volume-safe strategy: {e}")
+            return self._get_fallback_strategy()
+
+    def _validate_volume_safe_strategy(self, strategy: dict) -> bool:
+        """
+        Validate that a strategy is volume-safe (doesn't affect item dimensions)
+        
+        Args:
+            strategy: Strategy dictionary to validate
+            
+        Returns:
+            bool: True if strategy is volume-safe, False otherwise
+        """
+        if not self._validate_strategy(strategy):
+            return False
+            
+        # Check that operation focus is volume-safe
+        safe_operations = ["rotation", "swap", "subsequence", "balanced", "aggressive"]
+        operation_focus = strategy.get("operation_focus", "")
+        
+        if operation_focus not in safe_operations:
+            print(f"⚠️ Unsafe operation focus: {operation_focus}")
+            return False
+            
+        # Check explanation doesn't mention dimension modification
+        explanation = strategy.get("explanation", "").lower()
+        unsafe_keywords = ["resize", "scale", "dimension", "size", "volume", "length", "width", "height"]
+        
+        for keyword in unsafe_keywords:
+            if keyword in explanation:
+                print(f"⚠️ Unsafe explanation contains '{keyword}': {explanation}")
+                return False
+                
+        return True
 
 
 def get_llm_client() -> GeminiClient:

@@ -1,13 +1,15 @@
 """
 Route handler functions for the container packing application
 """
-from flask import request, render_template, send_file, jsonify, Blueprint, current_app
+from flask import request, render_template, send_file, jsonify, Blueprint, current_app, redirect, url_for, session
 from werkzeug.utils import secure_filename
 import pandas as pd
 from io import BytesIO
 import csv
 import subprocess
 import sys
+
+print("🔍 HANDLERS.PY LOADING - Debug mode active")
 
 # Import from config instead of app_modular
 from config import PLANS_FOLDER
@@ -27,11 +29,178 @@ from modules.visualization import create_interactive_visualization
 from modules.report import generate_detailed_report
 from modules.utils import allowed_file, cleanup_old_files
 
+# Set up debug logging to file
+import logging
+debug_logger = logging.getLogger('debug_handlers')
+debug_logger.setLevel(logging.DEBUG)
+debug_handler = logging.FileHandler('debug_handlers.log')
+debug_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+debug_logger.addHandler(debug_handler)
+
+print("[HANDLERS] Handlers module loaded successfully")
+
 # Create a blueprint
 bp = Blueprint('handlers', __name__)
 
 # Create container storage
 container_storage = ContainerStorage()
+
+print("[HANDLERS] Blueprint and container storage created")
+
+# Test handler to verify our module is working
+def test_debug_handler():
+    """Test handler to verify our handlers module is working"""
+    print("[DEBUG] test_debug_handler called successfully!")
+    return "Debug handler working!"
+
+# Step-based route handlers
+def step1_handler():
+    """Handle Step 1: Transport Mode Selection"""
+    print(f"[DEBUG] step1_handler called with method: {request.method}")
+    
+    # Initialize session data if not exists
+    if 'step_data' not in session:
+        session['step_data'] = {}
+        print(f"[DEBUG] Initialized new session data")
+    
+    # Handle POST request (form submission)
+    if request.method == 'POST':
+        transport_mode = request.form.get('transport_mode')
+        print(f"[DEBUG] POST request with transport_mode: {transport_mode}")
+        if transport_mode:
+            session['step_data']['transport_mode'] = transport_mode
+            session.permanent = True
+            print(f"[DEBUG] Stored transport_mode in session: {session['step_data']}")
+            return redirect('/step2')
+    
+    formatted_modes = format_transport_modes()
+    default_data = {
+        'transport_modes': formatted_modes,
+        'container_types': CONTAINER_TYPES
+    }
+    step_data = session.get('step_data', {})
+    print(f"[DEBUG] Rendering step1 with session data: {step_data}")
+    return render_template('steps/step1_transport.html', 
+                         data=default_data,
+                         step_data=step_data)
+
+def step2_handler():
+    """Handle Step 2: Container Selection"""
+    print(f"[DEBUG] step2_handler called with method: {request.method}")
+    print(f"[DEBUG] Current session data: {session.get('step_data', {})}")
+    
+    # Check if we have step 1 data
+    if 'step_data' not in session or 'transport_mode' not in session['step_data']:
+        print(f"[DEBUG] No step_data or transport_mode found, redirecting to step1")
+        return redirect('/step1')
+    
+    # Handle POST request (form submission)
+    if request.method == 'POST':
+        container_type = request.form.get('container_type')
+        length = request.form.get('length')
+        width = request.form.get('width')
+        height = request.form.get('height')
+        
+        print(f"[DEBUG] POST data - container_type: {container_type}, length: {length}, width: {width}, height: {height}")
+        
+        if container_type:
+            session['step_data']['container_type'] = container_type
+        if length:
+            session['step_data']['length'] = length
+        if width:
+            session['step_data']['width'] = width
+        if height:
+            session['step_data']['height'] = height
+        
+        session.permanent = True
+        print(f"[DEBUG] Updated session data: {session['step_data']}")
+        return redirect('/step3')
+    
+    transport_mode = session['step_data']['transport_mode']
+    formatted_modes = format_transport_modes()
+    default_data = {
+        'transport_modes': formatted_modes,
+        'container_types': CONTAINER_TYPES
+    }
+    
+    print(f"[DEBUG] Rendering step2 with transport_mode: {transport_mode}")
+    return render_template('steps/step2_container.html', 
+                         transport_mode=transport_mode, 
+                         data=default_data,
+                         step_data=session.get('step_data', {}),
+                         get_transport_name=get_transport_name)
+
+def step3_handler():
+    """Handle Step 3: File Upload"""
+    # Check if we have previous step data
+    if 'step_data' not in session or 'transport_mode' not in session['step_data']:
+        return redirect('/step1')
+    
+    # Handle POST request (file upload)
+    if request.method == 'POST':
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and file.filename:
+                # Save file info to session
+                session['step_data']['file_name'] = file.filename
+                session['step_data']['file_size'] = len(file.read())
+                file.seek(0)  # Reset file pointer
+                
+                # Store file temporarily for preview
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                session['step_data']['file_path'] = filepath
+                
+                # Generate CSV preview
+                try:
+                    if filename.endswith('.csv'):
+                        df = pd.read_csv(filepath)
+                    else:
+                        df = pd.read_excel(filepath)
+                    
+                    # Store preview data (first 10 rows)
+                    preview_data = df.head(10).to_dict('records')
+                    session['step_data']['csv_preview'] = preview_data
+                    session['step_data']['csv_columns'] = list(df.columns)
+                    session['step_data']['total_rows'] = len(df)
+                except Exception as e:
+                    session['step_data']['csv_error'] = str(e)
+                
+                session.permanent = True
+        
+        return redirect('/step4')
+    
+    step_data = session.get('step_data', {})
+    return render_template('steps/step3_upload.html',
+                         step_data=step_data,
+                         get_transport_name=get_transport_name)
+
+def step4_handler():
+    """Handle Step 4: Settings & Review"""
+    # Check if we have all previous step data
+    step_data = session.get('step_data', {})
+    
+    if 'transport_mode' not in step_data:
+        return redirect('/step1')
+    
+    # Handle POST request (final submission)
+    if request.method == 'POST':
+        # Get optimization settings
+        route_temperature = request.form.get('route_temperature')
+        optimization_algorithm = request.form.get('optimization_algorithm', 'regular')
+        
+        if route_temperature:
+            session['step_data']['route_temperature'] = route_temperature
+        session['step_data']['optimization_algorithm'] = optimization_algorithm
+        
+        # Redirect to optimization with session data
+        session.permanent = True
+        return redirect('/optimize')
+    
+    return render_template('steps/step4_settings.html',
+                         step_data=step_data,
+                         get_transport_name=get_transport_name)
 
 def landing_handler():
     """Handle the landing page route"""
@@ -83,8 +252,25 @@ def start_handler():
 
 def optimize_handler():
     """Handle the optimize route"""
+    debug_logger.info("🚀 OPTIMIZE_HANDLER FUNCTION ENTRY")
     if request.method == 'POST':
+        debug_logger.info("🚀 OPTIMIZE_HANDLER POST METHOD DETECTED")
         try:
+            # DEBUG: Log all variables at the start
+            debug_logger.info("=" * 60)
+            debug_logger.info("🔍 OPTIMIZE_HANDLER DEBUG START")
+            debug_logger.info(f"Request form keys: {list(request.form.keys())}")
+            debug_logger.info(f"Request files keys: {list(request.files.keys())}")
+            debug_logger.info(f"Session data: {session.get('step_data', {})}")
+            if 'file' in request.files:
+                file_obj = request.files['file'] 
+                debug_logger.info(f"File object: {file_obj}")
+                debug_logger.info(f"File object type: {type(file_obj)}")
+                debug_logger.info(f"Has filename: {hasattr(file_obj, 'filename')}")
+                if hasattr(file_obj, 'filename'):
+                    debug_logger.info(f"Filename: {file_obj.filename}")
+            debug_logger.info("=" * 60)
+            
             # Enable debug logging
             current_app.logger.info("=== OPTIMIZE ROUTE CALLED ===")
             current_app.logger.info(f"Request form keys: {list(request.form.keys())}")
@@ -92,23 +278,43 @@ def optimize_handler():
             
             cleanup_old_files()  # Cleanup old uploads
             
-            # Validate file
-            if 'file' not in request.files:
-                current_app.logger.error("No file in request")
+            # Get data from session if available, otherwise from form
+            step_data = session.get('step_data', {})
+            current_app.logger.info(f"Session step data: {step_data}")
+            
+            # Validate and get file
+            file = None
+            filepath = None
+            
+            # Check if file is in request or session
+            if 'file' in request.files and request.files['file'] and hasattr(request.files['file'], 'filename') and request.files['file'].filename:
+                file = request.files['file']
+                current_app.logger.info("Using file from request")
+            elif 'file_path' in step_data and os.path.exists(step_data['file_path']):
+                # Use file from session
+                filepath = step_data['file_path']
+                current_app.logger.info(f"Using file from session: {filepath}")
+                file = None  # Explicitly set to None
+            else:
+                current_app.logger.error("No file in request or session")
                 return jsonify({'error': 'No file uploaded'}), 400
+            
+            # Save file if it's from request
+            if file is not None:
+                if not allowed_file(file.filename):
+                    current_app.logger.error(f"Invalid file type: {file.filename}")
+                    return jsonify({'error': 'Invalid file type. Please upload a CSV or Excel file'}), 400
                 
-            file = request.files['file']
-            if file.filename == '':
-                current_app.logger.error("Empty filename")
-                return jsonify({'error': 'No file selected'}), 400
-                
-            if not allowed_file(file.filename):
-                current_app.logger.error(f"Invalid file type: {file.filename}")
-                return jsonify({'error': 'Invalid file type. Please upload a CSV or Excel file'}), 400
+                filename = secure_filename(file.filename)
+                filepath = os.path.normpath(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                file.save(filepath)
+                current_app.logger.info(f"File saved at: {filepath}")
+                file = None  # Set to None after processing
 
             # Validate transport mode and container selection
-            transport_mode = request.form.get('transport_mode')
-            container_type = request.form.get('container_type')
+            transport_mode = request.form.get('transport_mode') or step_data.get('transport_mode')
+            container_type = request.form.get('container_type') or step_data.get('container_type')
             
             current_app.logger.info(f"Received - Transport mode: {transport_mode}, Container type: {container_type}")
             
@@ -154,22 +360,19 @@ def optimize_handler():
             else:
                 current_app.logger.info(f"Predefined container '{container_type}' dimensions: {dimensions}")
             
-            # Log the dimensions to help debug
-            current_app.logger.info(f"Final container dimensions: {dimensions}")
+            # Validate that we have a filepath
+            if not filepath:
+                current_app.logger.error("No valid file path available")
+                return jsonify({'error': 'No valid file available for processing'}), 400
             
-            # Save and process file with proper path normalization
-            filename = secure_filename(file.filename)
-            filepath = os.path.normpath(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            if not os.path.exists(filepath):
+                current_app.logger.error(f"File does not exist: {filepath}")
+                return jsonify({'error': 'File not found for processing'}), 400
             
-            # Ensure upload directory exists
-            os.makedirs(os.path.dirname(filepath), exist_ok=True)
-            
-            # Save file with normalized path
-            file.save(filepath)
-            
-            current_app.logger.info(f"File saved at: {filepath}")
+            current_app.logger.info(f"Processing file at: {filepath}")
             
             # Load data into pandas DataFrame (df)
+            filename = os.path.basename(filepath)
             file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
             if file_ext == 'csv':
                 df = pd.read_csv(filepath)
@@ -488,28 +691,84 @@ def optimize_handler():
                 json.dump(plan_data, f, indent=4)
                 
             current_app.logger.info(f"Container plan saved to {plan_filepath}")
-              # Create visualization with container info
-            current_app.logger.info("Creating visualization")
+            
+            # AUTO-START STANDALONE VISUALIZATION AFTER JSON CREATION
+            # Run standalone_visualization.py in background immediately after JSON file creation
+            try:
+                current_app.logger.info("=== STARTING STANDALONE VISUALIZATION ===")
+                current_app.logger.info(f"JSON file created: {plan_filepath}")
+                
+                # Get the path to standalone_visualization.py
+                # Try multiple possible locations
+                possible_paths = [
+                    os.path.join(os.path.dirname(__file__), "..", "standalone_visualization.py"),
+                    os.path.join(os.getcwd(), "standalone_visualization.py"),
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "standalone_visualization.py")
+                ]
+                
+                visualization_script = None
+                for path in possible_paths:
+                    abs_path = os.path.abspath(path)
+                    if os.path.exists(abs_path):
+                        visualization_script = abs_path
+                        break
+                
+                if not visualization_script:
+                    current_app.logger.error("❌ standalone_visualization.py not found in any expected location:")
+                    for path in possible_paths:
+                        current_app.logger.error(f"   Checked: {os.path.abspath(path)}")
+                    raise FileNotFoundError("standalone_visualization.py not found")
+                
+                # Start the standalone visualization process
+                current_app.logger.info(f"✅ Found script at: {visualization_script}")
+                current_app.logger.info(f"🚀 Launching standalone visualization...")
+                
+                process = subprocess.Popen(
+                    [sys.executable, visualization_script], 
+                    cwd=os.path.dirname(visualization_script),
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE,
+                    text=True
+                )
+                
+                # Give it a moment to start
+                import time
+                time.sleep(2)
+                
+                # Check if process started successfully
+                if process.poll() is None:
+                    current_app.logger.info("✅ standalone_visualization.py started successfully!")
+                    current_app.logger.info("🎨 3D visualization will open in your default browser")
+                    current_app.logger.info(f"📊 Process PID: {process.pid}")
+                    current_app.logger.info("📁 You can also manually open the generated HTML file")
+                else:
+                    # Process exited immediately, get error
+                    stdout, stderr = process.communicate()
+                    current_app.logger.error(f"❌ standalone_visualization.py failed to start")
+                    current_app.logger.error(f"Exit code: {process.returncode}")
+                    if stderr:
+                        current_app.logger.error(f"Error: {stderr}")
+                    if stdout:
+                        current_app.logger.info(f"Output: {stdout}")
+                        
+            except Exception as e:
+                current_app.logger.error(f"❌ Failed to start standalone_visualization.py: {e}")
+                current_app.logger.error(f"Error type: {type(e).__name__}")
+                current_app.logger.warning("💡 You can manually run 'python standalone_visualization.py' to open the 3D view")
+                # Don't fail the entire optimization process if visualization fails
+                pass
+            
+            # Create visualization with container info for the web interface
+            current_app.logger.info("Creating web visualization")
             fig = create_interactive_visualization(container, container_info)
-              # Calculate item counts by category (boxing_type)
+            
+            # Calculate item counts by category (boxing_type)
             category_counts = {}
             for item in container.items:
                 category = getattr(item, 'boxing_type', 'Other') # Use 'Other' if boxing_type is missing
                 category_counts[category] = category_counts.get(category, 0) + 1
             
             current_app.logger.info(f"Calculated category counts: {category_counts}")
-            
-            # Run standalone_visualization.py in background
-            try:
-                current_app.logger.info("Starting standalone_visualization.py...")
-                visualization_script = os.path.join(os.getcwd(), "standalone_visualization.py")
-                subprocess.Popen([sys.executable, visualization_script], 
-                               cwd=os.getcwd(),
-                               stdout=subprocess.DEVNULL, 
-                               stderr=subprocess.DEVNULL)
-                current_app.logger.info("standalone_visualization.py started successfully")
-            except Exception as e:
-                current_app.logger.warning(f"Failed to start standalone_visualization.py: {e}")
             
             # Send professional Slack notification with HTTPS mobile access
             try:
@@ -552,6 +811,26 @@ def optimize_handler():
         except ValueError as e:
             current_app.logger.error(f"Value error: {str(e)}")
             return jsonify({'error': f'Invalid value in input: {str(e)}'}), 400
+        except AttributeError as e:
+            debug_logger.error(f'AttributeError in optimize_handler: {str(e)}', exc_info=True)
+            current_app.logger.error(f'AttributeError in optimize_handler: {str(e)}', exc_info=True)
+            # Log specific context for filename attribute errors
+            if 'filename' in str(e):
+                debug_logger.error("FILENAME ATTRIBUTE ERROR DETAILS:")
+                debug_logger.error(f"Request files: {list(request.files.keys())}")
+                debug_logger.error(f"Session step_data: {session.get('step_data', {})}")
+                current_app.logger.error("FILENAME ATTRIBUTE ERROR DETAILS:")
+                current_app.logger.error(f"Request files: {list(request.files.keys())}")
+                current_app.logger.error(f"Session step_data: {session.get('step_data', {})}")
+                if 'file' in request.files:
+                    file_obj = request.files['file']
+                    debug_logger.error(f"File object type: {type(file_obj)}")
+                    debug_logger.error(f"File object: {file_obj}")
+                    debug_logger.error(f"Has filename attr: {hasattr(file_obj, 'filename') if file_obj else 'File is None'}")
+                    current_app.logger.error(f"File object type: {type(file_obj)}")
+                    current_app.logger.error(f"File object: {file_obj}")
+                    current_app.logger.error(f"Has filename attr: {hasattr(file_obj, 'filename') if file_obj else 'File is None'}")
+            return jsonify({'error': f'An unexpected attribute error occurred: {str(e)}'}), 500
         except Exception as e:
             current_app.logger.error(f'Unexpected error during optimization: {str(e)}', exc_info=True)
             return jsonify({'error': f'An unexpected error occurred: {str(e)}'}), 500
@@ -602,7 +881,7 @@ def preview_csv_handler():
     
     file = request.files['file']
     
-    if file.filename == '':
+    if not file or file.filename == '':
         return jsonify({'success': False, 'error': 'No selected file'})
         
     if file:
@@ -836,6 +1115,17 @@ def format_transport_modes():
             current_app.logger.debug(f"Added mode: {display_name} with {len(container_list)} containers")
     
     return modes
+
+def get_transport_name(transport_id):
+    """Get transport mode name by ID"""
+    transport_names = {
+        '1': 'Road Transport',
+        '2': 'Sea Transport', 
+        '3': 'Air Transport',
+        '4': 'Rail Transport',
+        '5': 'Custom'
+    }
+    return transport_names.get(transport_id, 'Unknown')
 
 def index():
     """Handle the index route"""

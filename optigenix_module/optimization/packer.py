@@ -626,7 +626,7 @@ class GeneticPacker:
     def _get_adaptive_mutation_strategy(self, generation: int, population, 
                                      stagnation_counter: int) -> Optional[Dict[str, Any]]:
         """
-        Get adaptive mutation strategy recommendations from LLM
+        Get volume-safe adaptive mutation strategy recommendations from LLM
         
         Args:
             generation: Current generation number
@@ -634,7 +634,7 @@ class GeneticPacker:
             stagnation_counter: Number of generations without improvement
             
         Returns:
-            Dictionary with mutation strategy recommendations or None if API call fails
+            Dictionary with volume-safe mutation strategy recommendations or None if API call fails
         """
         # Check every 3 generations instead of 5 when stagnation is high
         check_frequency = 3 if stagnation_counter >= 5 else 5
@@ -648,6 +648,12 @@ class GeneticPacker:
             return None
             
         try:
+            global llm_client, logger # Access module-level instances
+            
+            if not llm_client or not hasattr(llm_client, 'get_volume_safe_strategy'):
+                logger.info("LLM client not available or doesn't support volume-safe strategies.")
+                return self._get_aggressive_mutation_strategy(stagnation_counter)
+            
             # Calculate current statistics
             fitnesses = [g.fitness for g in population]
             avg_fitness = sum(fitnesses) / len(fitnesses)
@@ -660,72 +666,41 @@ class GeneticPacker:
             logger.info(f"Best fitness: {best_fitness:.4f} | Average: {avg_fitness:.4f}")
             logger.info(f"Fitness variance: {fitness_variance:.6f} | Stagnation: {stagnation_counter}")
             
-            # Create a prompt with current algorithm state
-            prompt = f"""
-            Return a mutation strategy for a genetic algorithm optimizing 3D bin packing with temperature-sensitive items.
-            Current metrics:
-            - Generation: {generation}
-            - Best fitness: {best_fitness:.4f}
-            - Average fitness: {avg_fitness:.4f}
-            - Fitness variance: {fitness_variance:.6f}
-            - Stagnation: {stagnation_counter} generations
-
-            Based on these metrics, provide a JSON object with these EXACT keys:
-            {{
-                "mutation_rate_modifier": number, // Between -0.05 and 0.2
-                "operation_focus": string,        // One of: "rotation", "swap", "subsequence", "balanced", "aggressive" 
-                "explanation": string             // Brief explanation of strategy choice
-            }}
-
-            Guidelines for strategy selection:
-            - High fitness variance ({fitness_variance:.6f} > 0.1) -> Need more exploitation, focus on subsequence for better interlocking
-            - Low fitness variance ({fitness_variance:.6f} < 0.01) -> Need more exploration with swap operations
-            - Stagnation ({stagnation_counter} > 5 generations) -> VERY aggressive mutation with highest rate modifier (0.15-0.2)
-            - Temperature-sensitive items require central placement with good interlocking -> subsequence operations help
-            - Poor space utilization requires compact placement -> subsequence operations help group similar items
-            - High stagnation should trigger "aggressive" operation_focus with high mutation rate
-
-            Focus options effects:
-            - "rotation": Prioritize item orientation changes - good for fine-tuning but not for interlocking
-            - "swap": Prioritize reordering items - good for exploration
-            - "subsequence": Prioritize moving groups of items - BEST FOR INTERLOCKING and temperature-sensitive items
-            - "balanced": Equal focus on all operations - use when uncertain
-            - "aggressive": NEW OPTION - combines high rate subsequence mutations with random reordering - best for escaping stagnation
-
-            If stagnation > 8, ALWAYS use "aggressive" focus with maximum rate modifier (0.2).
-            If stagnation between 5-8, use "subsequence" with high rate modifier (0.15-0.2).
-            If stagnation < 5, use "balanced" or specific focus based on fitness variance.
-
-            RESPOND WITH ONLY THE JSON OBJECT, NO OTHER TEXT.
-            """
+            # Prepare metrics for volume-safe strategy
+            current_metrics = {
+                'avg_fitness': avg_fitness,
+                'best_fitness': best_fitness,
+                'fitness_variance': fitness_variance,
+                'generation': generation,
+                'stagnation_counter': stagnation_counter
+            }
             
-            response = llm_client.generate(prompt)
+            logger.info(f"    🔒 Requesting VOLUME-SAFE strategy from LLM...")
+            logger.info(f"    📊 Context: Gen {generation}, Stagnation {stagnation_counter}, Variance {fitness_variance:.6f}")
             
-            try:
-                strategy = json.loads(response.strip())
-                if "mutation_rate_modifier" in strategy and "operation_focus" in strategy:
-                    # Allow higher mutation rates for stagnation scenarios (up to 0.2)
-                    max_modifier = 0.2 if stagnation_counter >= 5 else 0.15
-                    strategy["mutation_rate_modifier"] = max(-0.05, min(max_modifier, strategy["mutation_rate_modifier"]))
-                    
-                    # Override with aggressive strategy for high stagnation
-                    if stagnation_counter >= 8 and strategy["operation_focus"] != "aggressive":
-                        strategy["operation_focus"] = "aggressive"
-                        strategy["mutation_rate_modifier"] = 0.2
-                        strategy["explanation"] = "Overriding with aggressive strategy due to critical stagnation"
-                    
-                    logger.info(f"    🤖 LLM Strategy: {strategy['operation_focus']} (rate: {strategy['mutation_rate_modifier']:.3f})")
-                    logger.info(f"    💭 Explanation: {strategy.get('explanation', 'No explanation provided')}")
-                    return strategy
-                    
-            except json.JSONDecodeError:
-                logger.warning("WARNING: Invalid LLM response format")
+            # Use volume-safe strategy method
+            strategy = llm_client.get_volume_safe_strategy(generation, current_metrics, stagnation_counter)
+            
+            if strategy and isinstance(strategy, dict):
+                # Allow higher mutation rates for stagnation scenarios (up to 0.2)
+                max_modifier = 0.2 if stagnation_counter >= 5 else 0.15
+                strategy["mutation_rate_modifier"] = max(-0.05, min(max_modifier, strategy["mutation_rate_modifier"]))
+                
+                # Override with aggressive strategy for high stagnation
+                if stagnation_counter >= 8 and strategy["operation_focus"] != "aggressive":
+                    strategy["operation_focus"] = "aggressive"
+                    strategy["mutation_rate_modifier"] = 0.2
+                    strategy["explanation"] = "Volume-safe aggressive strategy due to critical stagnation"
+                
+                logger.info(f"    ✅ Volume-Safe LLM Strategy: {strategy['operation_focus']} (rate: {strategy['mutation_rate_modifier']:.3f})")
+                logger.info(f"    💭 Explanation: {strategy.get('explanation', 'No explanation provided')}")
+                return strategy
+            else:
+                logger.warning("LLM returned invalid volume-safe strategy, using fallback")
                 return self._get_aggressive_mutation_strategy(stagnation_counter)
                 
-            return None
-            
         except Exception as e:
-            logger.error(f"ERROR: Failed to get adaptive mutation strategy: {e}")
+            logger.error(f"ERROR: Failed to get volume-safe adaptive mutation strategy: {e}")
             return self._get_aggressive_mutation_strategy(stagnation_counter)
     
     def _get_aggressive_mutation_strategy(self, stagnation_counter: int) -> Dict[str, Any]:

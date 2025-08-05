@@ -28,13 +28,26 @@ document.addEventListener('DOMContentLoaded', function() {
     once: true
   });
 
-  // Initialize Locomotive Scroll for smooth scrolling
-  const scroll = new LocomotiveScroll({
-    el: document.querySelector('[data-scroll-container]'),
-    smooth: true,
-    smartphone: { smooth: false },
-    tablet: { smooth: false }
-  });
+  // Initialize Locomotive Scroll only if not on the optimization page or disable it for form interactions
+  let scroll = null;
+  
+  // Check if we're on the optimization page
+  const isOptimizationPage = window.location.pathname.includes('/start') || 
+                             document.querySelector('.optimizer-container') !== null;
+  
+  if (!isOptimizationPage) {
+    // Only enable smooth scroll on landing page, not on optimization form
+    scroll = new LocomotiveScroll({
+      el: document.querySelector('[data-scroll-container]'),
+      smooth: true,
+      smartphone: { smooth: false },
+      tablet: { smooth: false }
+    });
+  } else {
+    // For optimization page, use browser native smooth scroll instead
+    document.documentElement.style.scrollBehavior = 'smooth';
+    console.log('Locomotive Scroll disabled for optimization page - using native smooth scroll');
+  }
   // Get data passed from Flask
   const defaultData = JSON.parse(document.getElementById('flask-data').textContent || '{"transport_modes":[]}');
   

@@ -52,21 +52,33 @@ def start_flask_server_instructions():
     print("🚀 AR VISUALIZATION READY!")
     print("="*60)
     
+    base_url = get_base_url()
+    
     if check_flask_server():
         print("✅ Flask server is already running!")
+        print(f"   🌐 Access visualization at: {base_url}/visualization")
         print("   You can use the 'AR View' button in the visualization.")
+        
+        # Auto-open the correct URL
+        try:
+            webbrowser.open(f'{base_url}/visualization')
+            print(f"   🚀 Opening {base_url}/visualization in your browser...")
+        except Exception as e:
+            print(f"   ⚠️  Could not auto-open browser: {e}")
+            print(f"   📋 Please manually navigate to: {base_url}/visualization")
     else:
         print("⚠️  Flask server is not running.")
         print("   To enable AR functionality:")
         print("   1. Open a new terminal/command prompt")
         print("   2. Navigate to this directory")
         print("   3. Run: python app_modular.py")
-        print("   4. Then click 'AR View' in the visualization")
+        print(f"   4. Then navigate to: {base_url}/visualization")
+        print("   5. Click 'AR View' in the visualization")
     
-    print("\n📋 CORS Issue Fixed:")
-    print("   ✅ Added Flask-CORS support")
-    print("   ✅ Updated JavaScript to use absolute URLs")
-    print("   ✅ Enhanced error handling")
+    print("\n📋 Important - Access Method:")
+    print("   ✅ CORRECT: Use Flask server URL (http://localhost:5000/visualization)")
+    print("   ❌ WRONG:   Do not open HTML file directly (file:// protocol)")
+    print("   💡 The Flask server is required for AR functionality")
     
     print("\n🌐 The visualization will open in your browser...")
     print("="*60)
@@ -1763,8 +1775,23 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
 """)
     
     print(f"Created enhanced interactive 3D visualization at {html_file}")
-    print(f"Opening visualization in web browser")
-    webbrowser.open(f'file://{os.path.abspath(html_file)}')
+    
+    # Check if Flask server is running and redirect appropriately
+    base_url = get_base_url()
+    if check_flask_server():
+        flask_url = f'{base_url}/visualization'
+        print(f"✅ Flask server detected - Opening visualization through Flask server")
+        print(f"🌐 URL: {flask_url}")
+        webbrowser.open(flask_url)
+    else:
+        print(f"⚠️  Flask server not running - Starting server instructions...")
+        start_flask_server_instructions()
+        
+        # Also provide fallback file access (but warn about limitations)
+        print(f"\n💡 Fallback: Opening HTML file directly (limited functionality)")
+        print(f"   📄 File: {html_file}")
+        print(f"   ⚠️  AR View button will not work without Flask server")
+        webbrowser.open(f'file://{os.path.abspath(html_file)}')
 
 def main():
     """Main function"""
