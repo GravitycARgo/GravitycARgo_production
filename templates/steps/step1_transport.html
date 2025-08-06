@@ -123,24 +123,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-cube logo-icon"></i>
-                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'components/step_navbar.html' %}
 
     <!-- Main Content -->
     <div class="step-container">

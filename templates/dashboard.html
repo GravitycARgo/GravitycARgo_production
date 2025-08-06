@@ -1451,8 +1451,7 @@
             animateCounter('excellentCount', performance.excellent);
             animateCounter('goodCount', performance.good);
             animateCounter('averageCount', performance.average);
-        }
-                : 0;
+        // (The extra closing brace was removed here)
             
             document.getElementById('totalPlans').textContent = totalPlans;
             document.getElementById('totalItems').textContent = totalItems.toLocaleString();

@@ -13,7 +13,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https:        function initAlgorithmSelection() {
+            // Algorithm selection logic here
+        }/fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
     
     <!-- Custom CSS -->
@@ -94,16 +96,26 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        .btn-step.btn-prev:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+        
         .btn-step.btn-optimize {
-            background: linear-gradient(135deg, var(--accent), #ff9500);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent));
             color: white;
             font-size: 1.1rem;
             padding: 1rem 2.5rem;
         }
         
+        .btn-step.btn-optimize:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 119, 119, 0.3);
+        }
+        
         .btn-step:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
         }
         
         .settings-grid {
@@ -217,6 +229,7 @@
         .algorithm-option.selected {
             border-color: var(--accent);
             background: rgba(255, 119, 119, 0.1);
+            box-shadow: 0 0 15px rgba(255, 119, 119, 0.3);
         }
         
         .algorithm-icon {
@@ -316,7 +329,7 @@
         }
         
         .route-temp-button {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent));
+            background: rgba(74, 144, 226, 0.2);
             border: none;
             color: white;
             padding: 0.5rem 1rem;
@@ -329,8 +342,17 @@
         }
         
         .route-temp-button:hover {
+            background: var(--primary-color);
             transform: translateY(-1px);
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+        
+        .route-temp-button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .route-temp-status {
@@ -379,24 +401,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-cube logo-icon"></i>
-                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'components/step_navbar.html' %}
 
     <!-- Main Content -->
     <div class="step-container">
@@ -745,7 +750,9 @@
             });
         }
         
-        function initRouteTemperatureCalculator() {
+                function initRouteTemperatureCalculator() {
+            // Route temperature calculation logic here
+        }
             const calculateBtn = document.getElementById('calculateRouteTemp');
             const statusDiv = document.getElementById('routeTempStatus');
             
@@ -815,7 +822,6 @@
                     }
                 });
             }
-        }
         
         function updateReviewSummary() {
             const transportNames = {

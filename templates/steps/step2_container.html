@@ -380,24 +380,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-cube logo-icon"></i>
-                <span class="logo-text">Gravity<span class="highlight">cARgo</span></span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'components/step_navbar.html' %}
 
     <!-- Main Content -->
     <div class="step-container">
@@ -542,6 +525,55 @@
             function updateTransportModeDisplay(transportMode) {
                 const transportNames = {
                     '1': 'Road Transport',
+                    '2': 'Sea Transport',
+                    '3': 'Air Transport', 
+                    '4': 'Rail Transport',
+                    '5': 'Custom Container'
+                };
+                
+                const displayElement = document.getElementById('selectedTransportMode');
+                if (displayElement) {
+                    displayElement.textContent = transportNames[transportMode] || 'Unknown';
+                }
+            }
+            
+            // Initialize container selection with button toggle behavior
+            function initContainerSelection() {
+                const containerOptions = document.querySelectorAll('.container-option');
+                
+                containerOptions.forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log("Container option clicked:", this.dataset.container);
+                        
+                        // Remove selected class from all options
+                        containerOptions.forEach(opt => {
+                            opt.classList.remove('selected', 'active');
+                        });
+                        
+                        // Add selected class to clicked option
+                        this.classList.add('selected', 'active');
+                        
+                        // Store selection
+                        if (containerTypeInput) {
+                            containerTypeInput.value = this.dataset.container;
+                        }
+                        sessionStorage.setItem('step2_container_type', this.dataset.container);
+                        
+                        // Enable next button
+                        if (nextBtn) {
+                            nextBtn.disabled = false;
+                            nextBtn.classList.remove('disabled');
+                        }
+                    });
+                });
+            }
+            
+            function updateTransportModeDisplay(transportMode) {
+                const transportNames = {
+                    '1': 'Road Transport',
                     '2': 'Sea Transport', 
                     '3': 'Air Transport',
                     '4': 'Rail Transport',
@@ -550,7 +582,7 @@
                 
                 const selectedTransportMode = document.getElementById('selectedTransportMode');
                 if (selectedTransportMode) {
-                    selectedTransportMode.textContent = transportNames[transportMode] || 'transport';
+                    selectedTransportMode.textContent = transportNames[transportMode] || 'Unknown Transport';
                 }
             }
             
@@ -562,6 +594,11 @@
                     console.error("Container grid element not found");
                     return;
                 }
+                
+                // After loading containers, initialize selection behavior
+                setTimeout(() => {
+                    initContainerSelection();
+                }, 100);
                 
                 containerGrid.innerHTML = "";
                 
