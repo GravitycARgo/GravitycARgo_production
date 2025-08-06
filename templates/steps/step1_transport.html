@@ -26,6 +26,1217 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
     
     <style>
+        /* =================================================================
+        /* =================================================================
+           UNIFIED NAVBAR SYSTEM - COMPLETE IMPLEMENTATION
+           ================================================================= */
+        
+        /* CSS Variables for Theme Support */
+        :root {
+            /* Light Theme (Default) */
+            --navbar-bg: #f8f9fa;
+            --navbar-border: rgba(0, 0, 0, 0.1);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            
+            /* Brand Colors - PRESERVED EXACTLY */
+            --brand-primary: #4A90E2;
+            --brand-accent: #FF7777;
+            --brand-white: #ffffff;
+            --success-color: #28a745;
+            
+            /* Navbar Layout Constants */
+            --navbar-height: 80px;
+            --navbar-padding: 24px;
+            --bubble-size: 56px;
+            --bubble-gap: 16px;
+            --step-spacing: 24px;
+            --connector-width: 80px;
+            --section-spacing: 24px;
+            --border-radius: 12px;
+            --border-radius-large: 16px;
+        }
+
+        /* Dark Theme Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --navbar-bg: #1a1a2e;
+                --navbar-border: rgba(255, 255, 255, 0.15);
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+                --text-muted: #888888;
+            }
+        }
+
+        [data-theme="dark"] {
+            --navbar-bg: #1a1a2e;
+            --navbar-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+        }
+
+        /* =================================================================
+           UNIFIED NAVBAR CONTAINER
+           ================================================================= */
+
+        .unified-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--navbar-bg);
+            border-bottom: 2px solid var(--navbar-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--navbar-padding);
+            height: 100%;
+            gap: var(--section-spacing);
+        }
+
+        /* =================================================================
+           LEFT SECTION: BRANDING WITH ANIMATED CUBE
+           ================================================================= */
+
+        .navbar-brand-section {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            min-width: 200px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            gap: 12px;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            color: var(--brand-primary) !important;
+        }
+
+        .brand-link:hover {
+            text-decoration: none;
+            transform: translateY(-1px);
+            color: var(--brand-primary) !important;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--brand-primary) !important;
+            transition: all 0.3s ease;
+        }
+
+        /* ANIMATED CUBE ROTATION */
+        .animated-cube {
+            animation: cubeRotate 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes cubeRotate {
+            0%, 100% { 
+                transform: rotateY(0deg) rotateX(0deg);
+                color: var(--brand-primary) !important;
+            }
+            25% { 
+                transform: rotateY(90deg) rotateX(15deg);
+                color: var(--brand-accent) !important;
+            }
+            50% { 
+                transform: rotateY(180deg) rotateX(0deg);
+                color: var(--brand-primary) !important;
+            }
+            75% { 
+                transform: rotateY(270deg) rotateX(-15deg);
+                color: var(--brand-accent) !important;
+            }
+        }
+
+        .brand-text {
+            color: var(--brand-primary) !important;
+            font-weight: 700;
+        }
+
+        .brand-highlight {
+            color: var(--brand-accent) !important;
+        }
+
+        .brand-cargo {
+            color: var(--brand-white) !important;
+        }
+
+        /* =================================================================
+           CENTER SECTION: STEP PROGRESS STEPPER
+           ================================================================= */
+
+        .step-progress-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-progress-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--step-spacing);
+            padding: 16px var(--bubble-gap);
+            width: 100%;
+        }
+
+        /* STEP WRAPPER - PROPER SPACING */
+        .step-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: var(--bubble-gap) 8px;
+            border-radius: var(--border-radius);
+            flex-shrink: 0;
+        }
+
+        .step-wrapper:hover {
+            opacity: 0.7;
+            transform: translateY(-2px);
+        }
+
+        .step-wrapper.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .step-wrapper.completed {
+            opacity: 1;
+        }
+
+        /* STEP BUBBLE - PERFECT SIZING */
+        .step-bubble {
+            width: var(--bubble-size);
+            height: var(--bubble-size);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--navbar-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: var(--bubble-gap);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-wrapper.active .step-bubble {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 25px rgba(74, 144, 226, 0.4);
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        .step-wrapper.completed .step-bubble {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 25px rgba(74, 144, 226, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 35px rgba(74, 144, 226, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        /* STEP NUMBERS & ICONS */
+        .step-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .step-wrapper.active .step-number,
+        .step-wrapper.completed .step-number {
+            color: #ffffff;
+        }
+
+        .step-check-icon {
+            font-size: 1.1rem;
+            color: #ffffff;
+            display: none;
+        }
+
+        .step-wrapper.completed .step-number {
+            display: none;
+        }
+
+        .step-wrapper.completed .step-check-icon {
+            display: block;
+            animation: checkPop 0.4s ease-out;
+        }
+
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* STEP LABELS */
+        .step-label {
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .step-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+
+        /* STEP CONNECTORS */
+        .step-connector {
+            width: var(--connector-width);
+            height: 4px;
+            background: var(--navbar-border);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin: 0 8px;
+        }
+
+        .step-connector.completed {
+            background: var(--success-color);
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .step-connector.active {
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--brand-primary) 100%);
+            animation: progressFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressFlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                opacity: 1;
+            }
+            50% { 
+                background-position: 100% 50%;
+                opacity: 0.8;
+            }
+        }
+
+        /* =================================================================
+           RIGHT SECTION: HAMBURGER MENU
+           ================================================================= */
+
+        .navbar-menu-section {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            position: relative;
+            min-width: 60px;
+            justify-content: flex-end;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--navbar-border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 4px;
+            padding: 12px;
+        }
+
+        .hamburger-menu:hover {
+            border-color: var(--brand-primary);
+            background: rgba(74, 144, 226, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+        }
+
+        .hamburger-menu:focus {
+            outline: 3px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        .hamburger-line {
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu:hover .hamburger-line {
+            background: var(--brand-primary);
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(3px, 3px);
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(3px, -3px);
+        }
+
+        /* DROPDOWN MENU */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 180px;
+            background: var(--navbar-bg);
+            border: 2px solid var(--navbar-border);
+            border-radius: var(--border-radius-large);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            padding: 8px 0;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--brand-primary);
+            text-decoration: none;
+            transform: translateX(4px);
+        }
+
+        .dropdown-item i {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-item:hover i,
+        .dropdown-item:focus i {
+            color: var(--brand-primary);
+        }
+
+        /* =================================================================
+           NAVIGATION BUTTONS - BELOW NAVBAR
+           ================================================================= */
+
+        .navigation-buttons-container {
+            position: fixed;
+            bottom: 24px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            pointer-events: none;
+            padding: 0 24px;
+        }
+
+        .nav-buttons-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            pointer-events: auto;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            min-width: 160px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn:focus {
+            outline: 3px solid var(--brand-primary);
+            outline-offset: 3px;
+        }
+
+        .nav-btn-previous {
+            background: var(--navbar-bg);
+            color: var(--text-primary);
+            border: 3px solid var(--brand-primary);
+        }
+
+        .nav-btn-previous:hover:not(:disabled) {
+            background: var(--brand-primary);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
+        }
+
+        .nav-btn-next {
+            background: var(--brand-primary);
+            color: #ffffff;
+            border: 3px solid var(--brand-primary);
+        }
+
+        .nav-btn-next:hover:not(:disabled) {
+            background: #357abd;
+            border-color: #357abd;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.5);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1) !important;
+            filter: grayscale(0.5);
+        }
+
+        /* Ensure body padding to prevent content overlap */
+        body {
+            padding-top: var(--navbar-height);
+        }
+
+        /* =================================================================
+           RESPONSIVE DESIGN
+           ================================================================= */
+
+        @media (max-width: 768px) {
+            :root {
+                --navbar-height: 100px;
+                --bubble-size: 48px;
+                --connector-width: 50px;
+                --step-spacing: 16px;
+                --section-spacing: 16px;
+            }
+            
+            .navbar-container {
+                gap: var(--section-spacing);
+                padding: 0 16px;
+            }
+            
+            .step-progress-track {
+                gap: 12px;
+                padding: 12px 8px;
+            }
+            
+            .step-wrapper {
+                min-width: 60px;
+                padding: 12px 4px;
+            }
+            
+            .step-title,
+            .step-subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .nav-buttons-wrapper {
+                flex-direction: column;
+                gap: 16px;
+                padding: 0 16px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                max-width: 320px;
+                padding: 14px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --navbar-height: 80px;
+                --bubble-size: 42px;
+                --connector-width: 30px;
+                --step-spacing: 8px;
+            }
+            
+            .step-label {
+                display: none;
+            }
+            
+            .step-progress-track {
+                gap: 8px;
+                padding: 8px 4px;
+            }
+            
+            .step-wrapper {
+                min-width: 50px;
+            }
+            
+            .brand-text {
+                font-size: 1.2rem;
+            }
+            
+            .nav-btn {
+                font-size: 0.9rem;
+                padding: 12px 20px;
+                min-width: 140px;
+            }
+        }
+
+        /* Step-specific styles */
+
+        [data-theme="dark"] {
+            --navbar-bg: #1a1a2e;
+            --navbar-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+        }
+
+        /* =================================================================
+           UNIFIED NAVBAR CONTAINER
+           ================================================================= */
+
+        .unified-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--navbar-bg);
+            border-bottom: 2px solid var(--navbar-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--navbar-padding);
+            height: 100%;
+            gap: var(--section-spacing);
+        }
+
+        /* =================================================================
+           LEFT SECTION: BRANDING WITH ANIMATED CUBE
+           ================================================================= */
+
+        .navbar-brand-section {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            min-width: 200px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            gap: 12px;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            color: var(--brand-primary) !important;
+        }
+
+        .brand-link:hover {
+            text-decoration: none;
+            transform: translateY(-1px);
+            color: var(--brand-primary) !important;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            color: var(--brand-primary) !important;
+            transition: all 0.3s ease;
+        }
+
+        /* ANIMATED CUBE ROTATION */
+        .animated-cube {
+            animation: cubeRotate 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes cubeRotate {
+            0%, 100% { 
+                transform: rotateY(0deg) rotateX(0deg);
+                color: var(--brand-primary) !important;
+            }
+            25% { 
+                transform: rotateY(90deg) rotateX(15deg);
+                color: var(--brand-accent) !important;
+            }
+            50% { 
+                transform: rotateY(180deg) rotateX(0deg);
+                color: var(--brand-primary) !important;
+            }
+            75% { 
+                transform: rotateY(270deg) rotateX(-15deg);
+                color: var(--brand-accent) !important;
+            }
+        }
+
+        .brand-text {
+            color: var(--brand-primary) !important;
+            font-weight: 700;
+        }
+
+        .brand-highlight {
+            color: var(--brand-accent) !important;
+        }
+
+        .brand-cargo {
+            color: var(--brand-white) !important;
+        }
+
+        /* =================================================================
+           CENTER SECTION: STEP PROGRESS STEPPER
+           ================================================================= */
+
+        .step-progress-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-progress-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--step-spacing);
+            padding: 16px var(--bubble-gap);
+            width: 100%;
+        }
+
+        /* STEP WRAPPER - PROPER SPACING */
+        .step-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: var(--bubble-gap) 8px;
+            border-radius: var(--border-radius);
+            flex-shrink: 0;
+        }
+
+        .step-wrapper:hover {
+            opacity: 0.7;
+            transform: translateY(-2px);
+        }
+
+        .step-wrapper.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .step-wrapper.completed {
+            opacity: 1;
+        }
+
+        /* STEP BUBBLE - PERFECT SIZING */
+        .step-bubble {
+            width: var(--bubble-size);
+            height: var(--bubble-size);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--navbar-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: var(--bubble-gap);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-wrapper.active .step-bubble {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 25px rgba(74, 144, 226, 0.4);
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        .step-wrapper.completed .step-bubble {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 25px rgba(74, 144, 226, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 35px rgba(74, 144, 226, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        /* STEP NUMBERS & ICONS */
+        .step-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .step-wrapper.active .step-number,
+        .step-wrapper.completed .step-number {
+            color: #ffffff;
+        }
+
+        .step-check-icon {
+            font-size: 1.1rem;
+            color: #ffffff;
+            display: none;
+        }
+
+        .step-wrapper.completed .step-number {
+            display: none;
+        }
+
+        .step-wrapper.completed .step-check-icon {
+            display: block;
+            animation: checkPop 0.4s ease-out;
+        }
+
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* STEP LABELS */
+        .step-label {
+            text-align: center;
+            min-height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .step-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+
+        /* STEP CONNECTORS */
+        .step-connector {
+            width: var(--connector-width);
+            height: 4px;
+            background: var(--navbar-border);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin: 0 8px;
+        }
+
+        .step-connector.completed {
+            background: var(--success-color);
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .step-connector.active {
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--brand-primary) 100%);
+            animation: progressFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes progressFlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                opacity: 1;
+            }
+            50% { 
+                background-position: 100% 50%;
+                opacity: 0.8;
+            }
+        }
+
+        /* =================================================================
+           RIGHT SECTION: HAMBURGER MENU
+           ================================================================= */
+
+        .navbar-menu-section {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            position: relative;
+            min-width: 60px;
+            justify-content: flex-end;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--navbar-border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 4px;
+            padding: 12px;
+        }
+
+        .hamburger-menu:hover {
+            border-color: var(--brand-primary);
+            background: rgba(74, 144, 226, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+        }
+
+        .hamburger-menu:focus {
+            outline: 3px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        .hamburger-line {
+            width: 20px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu:hover .hamburger-line {
+            background: var(--brand-primary);
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(3px, 3px);
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(3px, -3px);
+        }
+
+        /* DROPDOWN MENU */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 180px;
+            background: var(--navbar-bg);
+            border: 2px solid var(--navbar-border);
+            border-radius: var(--border-radius-large);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            padding: 8px 0;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--brand-primary);
+            text-decoration: none;
+            transform: translateX(4px);
+        }
+
+        .dropdown-item i {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .dropdown-item:hover i,
+        .dropdown-item:focus i {
+            color: var(--brand-primary);
+        }
+
+        /* =================================================================
+           NAVIGATION BUTTONS - BELOW NAVBAR
+           ================================================================= */
+
+        .navigation-buttons-container {
+            position: fixed;
+            bottom: 24px;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            pointer-events: none;
+            padding: 0 24px;
+        }
+
+        .nav-buttons-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            pointer-events: auto;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            min-width: 160px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-btn:focus {
+            outline: 3px solid var(--brand-primary);
+            outline-offset: 3px;
+        }
+
+        .nav-btn-previous {
+            background: var(--navbar-bg);
+            color: var(--text-primary);
+            border: 3px solid var(--brand-primary);
+        }
+
+        .nav-btn-previous:hover:not(:disabled) {
+            background: var(--brand-primary);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
+        }
+
+        .nav-btn-next {
+            background: var(--brand-primary);
+            color: #ffffff;
+            border: 3px solid var(--brand-primary);
+        }
+
+        .nav-btn-next:hover:not(:disabled) {
+            background: #357abd;
+            border-color: #357abd;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.5);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1) !important;
+            filter: grayscale(0.5);
+        }
+
+        /* Ensure body padding to prevent content overlap */
+        body {
+            padding-top: var(--navbar-height);
+        }
+
+        /* =================================================================
+           RESPONSIVE DESIGN
+           ================================================================= */
+
+        @media (max-width: 768px) {
+            :root {
+                --navbar-height: 100px;
+                --bubble-size: 48px;
+                --connector-width: 50px;
+                --step-spacing: 16px;
+                --section-spacing: 16px;
+            }
+            
+            .navbar-container {
+                gap: var(--section-spacing);
+                padding: 0 16px;
+            }
+            
+            .step-progress-track {
+                gap: 12px;
+                padding: 12px 8px;
+            }
+            
+            .step-wrapper {
+                min-width: 60px;
+                padding: 12px 4px;
+            }
+            
+            .step-title,
+            .step-subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .nav-buttons-wrapper {
+                flex-direction: column;
+                gap: 16px;
+                padding: 0 16px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                max-width: 320px;
+                padding: 14px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --navbar-height: 80px;
+                --bubble-size: 42px;
+                --connector-width: 30px;
+                --step-spacing: 8px;
+            }
+            
+            .step-label {
+                display: none;
+            }
+            
+            .step-progress-track {
+                gap: 8px;
+                padding: 8px 4px;
+            }
+            
+            .step-wrapper {
+                min-width: 50px;
+            }
+            
+            .brand-text {
+                font-size: 1.2rem;
+            }
+            
+            .nav-btn {
+                font-size: 0.9rem;
+                padding: 12px 20px;
+                min-width: 140px;
+            }
+        }
+
         /* Step-specific styles */
         .step-container {
             min-height: 100vh;
@@ -73,19 +1284,29 @@
         .navigation-buttons {
             position: fixed;
             bottom: 2rem;
-            right: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
         }
         
         .btn-step {
-            padding: 0.75rem 2rem;
-            border-radius: 25px;
+            padding: 1rem 2rem;
+            border-radius: 50px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
             border: none;
-            margin-left: 1rem;
+            font-size: 1rem;
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
         }
         
         .btn-step.btn-next {
@@ -122,8 +1343,97 @@
         <div class="grid-overlay"></div>
     </div>
 
-    <!-- Navigation -->
-    {% include 'components/step_navbar.html' %}
+    <!-- Unified Navigation Bar -->
+    <nav class="unified-navbar" id="unifiedNavbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar-container">
+            <!-- Left: Branding Section -->
+            <div class="navbar-brand-section">
+                <a class="brand-link" href="/" aria-label="GravitycARgo Home">
+                    <i class="fas fa-cube brand-icon animated-cube" aria-hidden="true"></i>
+                    <span class="brand-text">GravitycARgo</span>
+                </a>
+            </div>
+            
+            <!-- Center: Step Progress Section -->
+            <div class="step-progress-section">
+                <div class="step-progress-track">
+                    <!-- Step 1 -->
+                    <div class="step-wrapper active" data-step="1">
+                        <div class="step-bubble active">
+                            <span class="step-number">1</span>
+                        </div>
+                        <div class="step-label">
+                            <span class="step-title">Transport</span>
+                            <span class="step-subtitle">Mode</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Connector 1-2 -->
+                    <div class="step-connector" data-connector="1-2"></div>
+                    
+                    <!-- Step 2 -->
+                    <div class="step-wrapper" data-step="2">
+                        <div class="step-bubble">
+                            <span class="step-number">2</span>
+                        </div>
+                        <div class="step-label">
+                            <span class="step-title">Container</span>
+                            <span class="step-subtitle">Selection</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Connector 2-3 -->
+                    <div class="step-connector" data-connector="2-3"></div>
+                    
+                    <!-- Step 3 -->
+                    <div class="step-wrapper" data-step="3">
+                        <div class="step-bubble">
+                            <span class="step-number">3</span>
+                        </div>
+                        <div class="step-label">
+                            <span class="step-title">File</span>
+                            <span class="step-subtitle">Upload</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Connector 3-4 -->
+                    <div class="step-connector" data-connector="3-4"></div>
+                    
+                    <!-- Step 4 -->
+                    <div class="step-wrapper" data-step="4">
+                        <div class="step-bubble">
+                            <span class="step-number">4</span>
+                        </div>
+                        <div class="step-label">
+                            <span class="step-title">Settings</span>
+                            <span class="step-subtitle">Review</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right: Menu Section -->
+            <div class="navbar-menu-section">
+                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" aria-label="Open navigation menu" aria-expanded="false" aria-controls="dropdownMenu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div class="dropdown-menu" id="dropdownMenu" role="menu" aria-hidden="true">
+                    <a href="/" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="/dashboard" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- Main Content -->
     <div class="step-container">
@@ -347,6 +1657,42 @@
             // Submit form to next step
             document.getElementById('step1Form').submit();
         }
+        
+        // Hamburger Menu Toggle Function
+        function toggleHamburgerMenu() {
+            const hamburgerButton = document.querySelector('.hamburger-menu');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
+            
+            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            
+            if (isExpanded) {
+                dropdownMenu.classList.remove('show');
+                setTimeout(() => {
+                    hamburgerButton.focus();
+                }, 300);
+            } else {
+                dropdownMenu.classList.add('show');
+                setTimeout(() => {
+                    const firstMenuItem = dropdownMenu.querySelector('.dropdown-item');
+                    if (firstMenuItem) {
+                        firstMenuItem.focus();
+                    }
+                }, 100);
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const hamburgerButton = document.querySelector('.hamburger-menu');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (!hamburgerButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                if (dropdownMenu.classList.contains('show')) {
+                    toggleHamburgerMenu();
+                }
+            }
+        });
     </script>
 </body>
 </html>

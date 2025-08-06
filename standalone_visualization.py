@@ -52,33 +52,21 @@ def start_flask_server_instructions():
     print("🚀 AR VISUALIZATION READY!")
     print("="*60)
     
-    base_url = get_base_url()
-    
     if check_flask_server():
         print("✅ Flask server is already running!")
-        print(f"   🌐 Access visualization at: {base_url}/visualization")
         print("   You can use the 'AR View' button in the visualization.")
-        
-        # Auto-open the correct URL
-        try:
-            webbrowser.open(f'{base_url}/visualization')
-            print(f"   🚀 Opening {base_url}/visualization in your browser...")
-        except Exception as e:
-            print(f"   ⚠️  Could not auto-open browser: {e}")
-            print(f"   📋 Please manually navigate to: {base_url}/visualization")
     else:
         print("⚠️  Flask server is not running.")
         print("   To enable AR functionality:")
         print("   1. Open a new terminal/command prompt")
         print("   2. Navigate to this directory")
         print("   3. Run: python app_modular.py")
-        print(f"   4. Then navigate to: {base_url}/visualization")
-        print("   5. Click 'AR View' in the visualization")
+        print("   4. Then click 'AR View' in the visualization")
     
-    print("\n📋 Important - Access Method:")
-    print("   ✅ CORRECT: Use Flask server URL (http://localhost:5000/visualization)")
-    print("   ❌ WRONG:   Do not open HTML file directly (file:// protocol)")
-    print("   💡 The Flask server is required for AR functionality")
+    print("\n📋 CORS Issue Fixed:")
+    print("   ✅ Added Flask-CORS support")
+    print("   ✅ Updated JavaScript to use absolute URLs")
+    print("   ✅ Enhanced error handling")
     
     print("\n🌐 The visualization will open in your browser...")
     print("="*60)
@@ -1340,12 +1328,24 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             const height = sceneContainer.clientHeight;
             
             if (isOrthographic) {
+                // Switch to perspective camera
                 camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
                 camera.position.set(maxSize * 1.5, maxSize * 1.5, maxSize * 1.5);
                 isOrthographic = false;
-                document.getElementById('view-perspective').classList.add('bg-blue-500');
-                document.getElementById('view-orthographic').classList.remove('bg-blue-500');
+                
+                // Update button states
+                const perspectiveBtn = document.getElementById('view-perspective');
+                const orthographicBtn = document.getElementById('view-orthographic');
+                
+                perspectiveBtn.classList.add('toggle-active');
+                perspectiveBtn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                perspectiveBtn.style.color = 'white';
+                
+                orthographicBtn.classList.remove('toggle-active');
+                orthographicBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                orthographicBtn.style.color = 'white';
             } else {
+                // Switch to orthographic camera
                 const frustumSize = maxSize * 2;
                 const aspect = width / height;
                 camera = new THREE.OrthographicCamera(
@@ -1355,8 +1355,18 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                 );
                 camera.position.set(maxSize * 1.5, maxSize * 1.5, maxSize * 1.5);
                 isOrthographic = true;
-                document.getElementById('view-orthographic').classList.add('bg-blue-500');
-                document.getElementById('view-perspective').classList.remove('bg-blue-500');
+                
+                // Update button states
+                const perspectiveBtn = document.getElementById('view-perspective');
+                const orthographicBtn = document.getElementById('view-orthographic');
+                
+                orthographicBtn.classList.add('toggle-active');
+                orthographicBtn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                orthographicBtn.style.color = 'white';
+                
+                perspectiveBtn.classList.remove('toggle-active');
+                perspectiveBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                perspectiveBtn.style.color = 'white';
             }
             
             camera.lookAt(center);
@@ -1368,13 +1378,16 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
         function toggleAutoRotate() {
             autoRotate = !autoRotate;
             controls.autoRotate = autoRotate;
+            
             const btn = document.getElementById('auto-rotate');
             if (autoRotate) {
-                btn.classList.add('bg-blue-500');
-                btn.classList.remove('bg-blue-500/20');
+                btn.classList.add('toggle-active');
+                btn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                btn.style.color = 'white';
             } else {
-                btn.classList.remove('bg-blue-500');
-                btn.classList.add('bg-blue-500/20');
+                btn.classList.remove('toggle-active');
+                btn.style.background = 'rgba(255, 255, 255, 0.1)';
+                btn.style.color = 'white';
             }
         }
         
@@ -1445,7 +1458,8 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
                 console.log('Switched to 3D View');
             }
         });
-          document.getElementById('view-ar').addEventListener('click', function() {
+        
+        document.getElementById('view-ar').addEventListener('click', function() {
             if (!this.classList.contains('toggle-active')) {
                 // Switch to AR view
                 this.classList.add('toggle-active');
@@ -1671,16 +1685,56 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             }
         }
         
-        document.getElementById('view-orthographic').addEventListener('click', () => {
-            if (!isOrthographic) toggleCameraType();
+        document.getElementById('view-orthographic').addEventListener('click', function() {
+            if (!isOrthographic) {
+                toggleCameraType();
+                
+                // Set orthographic button as active
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+                
+                // Set perspective button as inactive
+                const perspectiveBtn = document.getElementById('view-perspective');
+                perspectiveBtn.classList.remove('toggle-active');
+                perspectiveBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                perspectiveBtn.style.color = 'white';
+            }
         });
         
-        document.getElementById('view-perspective').addEventListener('click', () => {
-            if (isOrthographic) toggleCameraType();
+        document.getElementById('view-perspective').addEventListener('click', function() {
+            if (isOrthographic) {
+                toggleCameraType();
+                
+                // Set perspective button as active
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+                
+                // Set orthographic button as inactive
+                const orthographicBtn = document.getElementById('view-orthographic');
+                orthographicBtn.classList.remove('toggle-active');
+                orthographicBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                orthographicBtn.style.color = 'white';
+            }
         });
         
         document.getElementById('reset-camera').addEventListener('click', resetCamera);
-        document.getElementById('auto-rotate').addEventListener('click', toggleAutoRotate);
+        
+        document.getElementById('auto-rotate').addEventListener('click', function() {
+            toggleAutoRotate();
+            
+            // Update button appearance based on current state
+            if (autoRotate) {
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.classList.remove('toggle-active');
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
+        });
         
         // Animation control event listeners
         document.getElementById('play-animation').addEventListener('click', resumeAnimation);
@@ -1689,22 +1743,57 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
         
         document.getElementById('toggle-labels').addEventListener('click', function() {
             showLabels = !showLabels;
+            
+            // Toggle visibility of all text sprites
             textSprites.forEach(sprite => {
                 sprite.visible = showLabels;
             });
-            this.classList.toggle('bg-blue-500');
-            this.classList.toggle('bg-white/10');
+            
+            // Update button appearance based on current state
+            if (showLabels) {
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.classList.remove('toggle-active');
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
         });
         
         document.getElementById('toggle-wireframe').addEventListener('click', function() {
             showWireframe = !showWireframe;
-            this.classList.toggle('bg-blue-500');
-            this.classList.toggle('bg-white/10');
+            
+            // Update button appearance based on current state
+            if (showWireframe) {
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.classList.remove('toggle-active');
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
+            
+            // Refresh the current container display to apply wireframe changes
             const currentIndex = parseInt(document.getElementById('file-select').value);
             displayContainer(currentIndex);
         });
         
-        document.getElementById('explode-view').addEventListener('click', toggleExplodedView);
+        document.getElementById('explode-view').addEventListener('click', function() {
+            toggleExplodedView();
+            
+            // Update button appearance based on current state
+            if (explodedView) {
+                this.classList.add('toggle-active');
+                this.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                this.style.color = 'white';
+            } else {
+                this.classList.remove('toggle-active');
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+                this.style.color = 'white';
+            }
+        });
         
         document.getElementById('file-select').addEventListener('change', function() {
             displayContainer(parseInt(this.value));
@@ -1762,9 +1851,62 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
             createParticles();
             initializeCharts();
             initializeRenderer();
+            
+            // Initialize button states
+            initializeButtonStates();
+            
             displayContainer(0);
             handleResize();
             animate();
+        }
+        
+        // Initialize button states to match default values
+        function initializeButtonStates() {
+            // Perspective camera is default (isOrthographic = false)
+            const perspectiveBtn = document.getElementById('view-perspective');
+            const orthographicBtn = document.getElementById('view-orthographic');
+            
+            if (perspectiveBtn && orthographicBtn) {
+                perspectiveBtn.classList.add('toggle-active');
+                perspectiveBtn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                perspectiveBtn.style.color = 'white';
+                
+                orthographicBtn.classList.remove('toggle-active');
+                orthographicBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                orthographicBtn.style.color = 'white';
+            }
+            
+            // Labels are shown by default (showLabels = true)
+            const labelsBtn = document.getElementById('toggle-labels');
+            if (labelsBtn) {
+                labelsBtn.classList.add('toggle-active');
+                labelsBtn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                labelsBtn.style.color = 'white';
+            }
+            
+            // Wireframe is shown by default (showWireframe = true)
+            const wireframeBtn = document.getElementById('toggle-wireframe');
+            if (wireframeBtn) {
+                wireframeBtn.classList.add('toggle-active');
+                wireframeBtn.style.background = 'linear-gradient(135deg, #3C82F6 0%, #5B76F3 100%)';
+                wireframeBtn.style.color = 'white';
+            }
+            
+            // Auto-rotate is off by default (autoRotate = false)
+            const autoRotateBtn = document.getElementById('auto-rotate');
+            if (autoRotateBtn) {
+                autoRotateBtn.classList.remove('toggle-active');
+                autoRotateBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                autoRotateBtn.style.color = 'white';
+            }
+            
+            // Exploded view is off by default (explodedView = false)
+            const explodeBtn = document.getElementById('explode-view');
+            if (explodeBtn) {
+                explodeBtn.classList.remove('toggle-active');
+                explodeBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+                explodeBtn.style.color = 'white';
+            }
         }
         
         // Start when DOM is loaded
@@ -1775,23 +1917,8 @@ def create_3d_visualization(data_dir="container_plans", specific_file=None):
 """)
     
     print(f"Created enhanced interactive 3D visualization at {html_file}")
-    
-    # Check if Flask server is running and redirect appropriately
-    base_url = get_base_url()
-    if check_flask_server():
-        flask_url = f'{base_url}/visualization'
-        print(f"✅ Flask server detected - Opening visualization through Flask server")
-        print(f"🌐 URL: {flask_url}")
-        webbrowser.open(flask_url)
-    else:
-        print(f"⚠️  Flask server not running - Starting server instructions...")
-        start_flask_server_instructions()
-        
-        # Also provide fallback file access (but warn about limitations)
-        print(f"\n💡 Fallback: Opening HTML file directly (limited functionality)")
-        print(f"   📄 File: {html_file}")
-        print(f"   ⚠️  AR View button will not work without Flask server")
-        webbrowser.open(f'file://{os.path.abspath(html_file)}')
+    print(f"Opening visualization in web browser")
+    webbrowser.open(f'file://{os.path.abspath(html_file)}')
 
 def main():
     """Main function"""
