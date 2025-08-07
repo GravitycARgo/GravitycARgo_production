@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
     
+    <!-- Navigation JavaScript -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}" defer></script>
+    
+    <!-- Centralized Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}"/>
+    
     <style>
         /* =================================================================
            UNIFIED NAVBAR SYSTEM - COMPLETE IMPLEMENTATION
@@ -697,7 +703,7 @@
             align-items: center;
             justify-content: center;
             padding: 2rem 0;
-            margin-top: var(--navbar-height);
+            margin-top: 20px; /* Additional spacing below navbar */
         }
         
         .step-content {
@@ -775,33 +781,63 @@
         }
         
         /* File upload specific styles */
+        /* Enhanced Upload Zone Styles */
         .upload-zone {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(99, 102, 241, 0.03) 100%);
+            border: 3px dashed var(--brand-primary);
+            border-radius: 20px;
             padding: 3rem 2rem;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            margin: 2rem 0;
+        }
+        
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transition: left 0.6s ease;
         }
         
         .upload-zone:hover {
-            border-color: var(--primary-color);
-            background: rgba(74, 144, 226, 0.1);
+            border-color: var(--brand-accent);
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(255, 119, 119, 0.05) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+        }
+        
+        .upload-zone:hover::before {
+            left: 100%;
         }
         
         .upload-zone.drag-over {
-            border-color: var(--accent);
-            background: rgba(255, 119, 119, 0.1);
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(74, 144, 226, 0.05) 100%);
             transform: scale(1.02);
+        }
+        
+        .upload-zone.file-selected {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.08) 0%, rgba(74, 144, 226, 0.03) 100%);
         }
         
         .upload-icon {
             font-size: 4rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+            color: var(--brand-primary);
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
         
         .upload-text {
@@ -1038,6 +1074,152 @@
             padding: 0.75rem 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        /* Enhanced Upload Features */
+        .upload-formats {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .format-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .format-badge.csv {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .format-badge.xlsx {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .format-badge.xls {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .template-btn.primary {
+            background: linear-gradient(135deg, var(--brand-primary), var(--secondary-color));
+            color: white;
+        }
+        
+        .template-btn.secondary {
+            background: linear-gradient(135deg, var(--brand-accent), #ff6b6b);
+            color: white;
+        }
+        
+        .upload-feedback {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            animation: slideInRight 0.5s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Enhanced CSV Preview */
+        .csv-preview-container {
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+        
+        .csv-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .csv-preview-header h3 {
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1.25rem;
+        }
+        
+        .csv-stats {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-badge {
+            background: linear-gradient(135deg, var(--brand-primary), var(--secondary-color));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .csv-preview-table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .csv-preview-table {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-collapse: collapse;
+        }
+        
+        .csv-preview-table th {
+            background: linear-gradient(135deg, var(--brand-primary), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+        }
+        
+        .csv-preview-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .csv-preview-table tr:hover td {
+            background: rgba(74, 144, 226, 0.05);
+        }
+        
+        .preview-footer {
+            text-align: center;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: 0 0 10px 10px;
+        }
     </style>
 </head>
 
@@ -1061,7 +1243,7 @@
     <!-- Unified Navigation Bar -->
     <nav class="unified-navbar" id="unifiedNavbar" role="navigation" aria-label="Main navigation">
         <div class="navbar-container">
-            <!-- Left: Branding Section -->
+            <!-- Left: Brand Section -->
             <div class="navbar-brand-section">
                 <a class="brand-link" href="/" aria-label="GravitycARgo Home">
                     <i class="fas fa-cube brand-icon animated-cube" aria-hidden="true"></i>
@@ -1069,74 +1251,17 @@
                 </a>
             </div>
             
-            <!-- Center: Step Progress Section -->
-            <div class="step-progress-section">
-                <div class="step-progress-track">
-                    <!-- Step 1 -->
-                    <div class="step-wrapper" data-step="1">
-                        <div class="step-bubble completed">
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Transport</span>
-                            <span class="step-subtitle">Mode</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 1-2 -->
-                    <div class="step-connector completed" data-connector="1-2"></div>
-                    
-                    <!-- Step 2 -->
-                    <div class="step-wrapper" data-step="2">
-                        <div class="step-bubble completed">
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Container</span>
-                            <span class="step-subtitle">Selection</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 2-3 -->
-                    <div class="step-connector active" data-connector="2-3"></div>
-                    
-                    <!-- Step 3 -->
-                    <div class="step-wrapper active" data-step="3">
-                        <div class="step-bubble active">
-                            <span class="step-number">3</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">File</span>
-                            <span class="step-subtitle">Upload</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 3-4 -->
-                    <div class="step-connector" data-connector="3-4"></div>
-                    
-                    <!-- Step 4 -->
-                    <div class="step-wrapper" data-step="4">
-                        <div class="step-bubble">
-                            <span class="step-number">4</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Settings</span>
-                            <span class="step-subtitle">Review</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Right: Menu Section -->
             <div class="navbar-menu-section">
-                <button class="hamburger-menu" id="hamburgerMenu" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="dropdownMenu">
+                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" 
+                        aria-label="Open navigation menu" aria-expanded="false" aria-controls="hamburger-dropdown">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                 </button>
                 
                 <!-- Dropdown Menu -->
-                <div class="dropdown-menu" id="dropdownMenu" role="menu" aria-hidden="true">
+                <div class="dropdown-menu" id="hamburger-dropdown" role="menu" aria-hidden="true">
                     <a href="/" class="dropdown-item" role="menuitem">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
@@ -1144,6 +1269,18 @@
                     <a href="/dashboard" class="dropdown-item" role="menuitem">
                         <i class="fas fa-chart-line"></i>
                         <span>Dashboard</span>
+                    </a>
+                    <a href="/step2" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Previous Step</span>
+                    </a>
+                    <a href="{{ url_for('static', filename='input/perfect_100.csv') }}" class="dropdown-item" role="menuitem" download>
+                        <i class="fas fa-download"></i>
+                        <span>Sample CSV</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="if(confirm('Are you sure you want to reset all data?')) { sessionStorage.clear(); location.reload(); }">
+                        <i class="fas fa-redo-alt"></i>
+                        <span>Reset</span>
                     </a>
                 </div>
             </div>
@@ -1191,22 +1328,38 @@
                         <input type="hidden" id="height" name="height" value="{{ height }}">
                         
                         <!-- Upload Zone -->
+                        <!-- Enhanced Upload Zone -->
                         <div class="upload-zone" id="dropZone" data-aos="fade-up" data-aos-delay="400">
                             <input type="file" id="file_input" name="file" class="file-input" accept=".csv,.xlsx,.xls" required>
                             <div class="upload-icon">
                                 <i class="fas fa-cloud-upload-alt"></i>
                             </div>
-                            <div class="upload-text">Drag & Drop Your File</div>
+                            <div class="upload-text">📁 Drag & Drop Your File Here</div>
                             <div class="upload-subtitle">or click to browse files</div>
+                            
+                            <!-- Format badges -->
+                            <div class="upload-formats">
+                                <span class="format-badge csv">CSV</span>
+                                <span class="format-badge xlsx">XLSX</span>
+                                <span class="format-badge xls">XLS</span>
+                            </div>
+                            
+                            <!-- Enhanced Template Links -->
                             <div class="template-links">
-                                <a href="{{ url_for('static', filename='templates/template.csv') }}" class="template-btn" download>
+                                <a href="{{ url_for('static', filename='input/perfect_100.csv') }}" class="template-btn primary" download>
                                     <i class="fas fa-download me-2"></i>
-                                    Download CSV Template
+                                    Sample CSV Data
                                 </a>
-                                <a href="{{ url_for('static', filename='templates/template.xlsx') }}" class="template-btn" download>
+                                <a href="{{ url_for('static', filename='input/max_utilization.csv') }}" class="template-btn secondary" download>
                                     <i class="fas fa-download me-2"></i>
-                                    Download Excel Template
+                                    Max Utilization Sample
                                 </a>
+                            </div>
+                            
+                            <!-- Visual Feedback -->
+                            <div class="upload-feedback" id="uploadFeedback" style="display: none;">
+                                <i class="fas fa-check-circle"></i>
+                                <span>File ready for processing!</span>
                             </div>
                         </div>
                         
@@ -1337,6 +1490,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     
+    <!-- Enhanced Upload System -->
+    <script src="{{ url_for('static', filename='js/enhanced-upload.js') }}"></script>
+    
     <script>
         // Initialize AOS animations
         AOS.init({
@@ -1349,106 +1505,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log("Step 3 - File Upload loaded");
             
-            // Initialize unified navbar functionality
-            initUnifiedNavbar();
-            
             // Load data from previous steps
             loadPreviousStepData();
             
             // Initialize file upload functionality
             initFileUpload();
         });
-        
-        // Unified Navbar Initialization
-        function initUnifiedNavbar() {
-            const hamburgerMenu = document.getElementById('hamburgerMenu');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            
-            if (hamburgerMenu && dropdownMenu) {
-                // Toggle dropdown menu
-                hamburgerMenu.addEventListener('click', function() {
-                    const isExpanded = hamburgerMenu.getAttribute('aria-expanded') === 'true';
-                    
-                    hamburgerMenu.setAttribute('aria-expanded', !isExpanded);
-                    dropdownMenu.setAttribute('aria-hidden', isExpanded);
-                    dropdownMenu.classList.toggle('show');
-                });
-                
-                // Keyboard navigation for hamburger menu
-                hamburgerMenu.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        hamburgerMenu.click();
-                    }
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!hamburgerMenu.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                        hamburgerMenu.setAttribute('aria-expanded', 'false');
-                        dropdownMenu.setAttribute('aria-hidden', 'true');
-                        dropdownMenu.classList.remove('show');
-                    }
-                });
-                
-                // Close dropdown on escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
-                        hamburgerMenu.setAttribute('aria-expanded', 'false');
-                        dropdownMenu.setAttribute('aria-hidden', 'true');
-                        dropdownMenu.classList.remove('show');
-                        hamburgerMenu.focus();
-                    }
-                });
-                
-                // Arrow key navigation within dropdown
-                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
-                dropdownItems.forEach((item, index) => {
-                    item.addEventListener('keydown', function(e) {
-                        if (e.key === 'ArrowDown') {
-                            e.preventDefault();
-                            const nextIndex = (index + 1) % dropdownItems.length;
-                            dropdownItems[nextIndex].focus();
-                        } else if (e.key === 'ArrowUp') {
-                            e.preventDefault();
-                            const prevIndex = index === 0 ? dropdownItems.length - 1 : index - 1;
-                            dropdownItems[prevIndex].focus();
-                        } else if (e.key === 'Enter') {
-                            e.preventDefault();
-                            item.click();
-                        }
-                    });
-                });
-            }
-            
-            // Step navigation functionality
-            const stepWrappers = document.querySelectorAll('.step-wrapper');
-            stepWrappers.forEach((wrapper, index) => {
-                const stepNumber = index + 1;
-                
-                wrapper.addEventListener('click', function() {
-                    // Only allow navigation to previous steps
-                    if (stepNumber < 3) {
-                        navigateToStep(stepNumber);
-                    }
-                });
-                
-                wrapper.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        if (stepNumber < 3) {
-                            navigateToStep(stepNumber);
-                        }
-                    }
-                });
-            });
-        }
-        
-        function navigateToStep(stepNumber) {
-            if (stepNumber >= 1 && stepNumber < 3) {
-                window.location.href = `/step${stepNumber}`;
-            }
-        }
         
         function loadPreviousStepData() {
             const transportModeInput = document.getElementById('transport_mode');

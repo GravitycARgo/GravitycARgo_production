@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
     
+    <!-- Navigation JavaScript -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}" defer></script>
+    
+    <!-- Centralized Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}"/>
+    
     <style>
         /* =================================================================
            UNIFIED NAVBAR SYSTEM - COMPLETE IMPLEMENTATION
@@ -653,11 +659,12 @@
 
         /* Step-specific styles */
         .step-container {
-            min-height: 100vh;
+            min-height: calc(100vh - var(--navbar-height));
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem 0;
+            margin-top: 20px; /* Additional spacing below navbar */
         }
         
         .step-content {
@@ -1006,103 +1013,48 @@
     <!-- UNIFIED NAVBAR SYSTEM -->
     <nav class="unified-navbar" role="navigation" aria-label="Main navigation">
         <div class="navbar-container">
-            <!-- LEFT SECTION: Branding with Animated Cube -->
+            <!-- Left: Brand Section -->
             <div class="navbar-brand-section">
                 <a href="/" class="brand-link" aria-label="GravitycARgo Home">
                     <i class="fas fa-cube brand-icon animated-cube" aria-hidden="true"></i>
-                    <span class="brand-text">
                     <span class="brand-text">GravitycARgo</span>
-                    </span>
                 </a>
             </div>
             
-            <!-- CENTER SECTION: Step Progress -->
-            <div class="step-progress-section">
-                <div class="step-progress-track" role="progressbar" aria-label="Step progress: Step 4 of 4" aria-valuenow="4" aria-valuemin="1" aria-valuemax="4">
-                    <!-- Step 1: Transport -->
-                    <div class="step-wrapper completed" onclick="navigateToStep(1)" tabindex="0" role="button" aria-label="Step 1: Transport Mode - Completed">
-                        <div class="step-bubble">
-                            <span class="step-number">1</span>
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <div class="step-title">Transport</div>
-                            <div class="step-subtitle">Mode Selection</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 1 -->
-                    <div class="step-connector completed" aria-hidden="true"></div>
-                    
-                    <!-- Step 2: Container -->
-                    <div class="step-wrapper completed" onclick="navigateToStep(2)" tabindex="0" role="button" aria-label="Step 2: Container Selection - Completed">
-                        <div class="step-bubble">
-                            <span class="step-number">2</span>
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <div class="step-title">Container</div>
-                            <div class="step-subtitle">Type Selection</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 2 -->
-                    <div class="step-connector completed" aria-hidden="true"></div>
-                    
-                    <!-- Step 3: Upload -->
-                    <div class="step-wrapper completed" onclick="navigateToStep(3)" tabindex="0" role="button" aria-label="Step 3: Data Upload - Completed">
-                        <div class="step-bubble">
-                            <span class="step-number">3</span>
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <div class="step-title">Upload</div>
-                            <div class="step-subtitle">Data Input</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 3 -->
-                    <div class="step-connector completed" aria-hidden="true"></div>
-                    
-                    <!-- Step 4: Settings (Current) -->
-                    <div class="step-wrapper active" onclick="navigateToStep(4)" tabindex="0" role="button" aria-label="Step 4: Settings and Review - Current Step">
-                        <div class="step-bubble">
-                            <span class="step-number">4</span>
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <div class="step-title">Settings</div>
-                            <div class="step-subtitle">Final Review</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- RIGHT SECTION: Hamburger Menu -->
+            <!-- Right: Menu Section -->
             <div class="navbar-menu-section">
-                <button class="hamburger-menu" 
-                        onclick="toggleHamburgerMenu()" 
-                        aria-expanded="false" 
-                        aria-controls="hamburger-dropdown" 
-                        aria-label="Toggle navigation menu"
-                        tabindex="0">
-                    <div class="hamburger-line" aria-hidden="true"></div>
-                    <div class="hamburger-line" aria-hidden="true"></div>
-                    <div class="hamburger-line" aria-hidden="true"></div>
+                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" 
+                        aria-label="Open navigation menu" aria-expanded="false" aria-controls="hamburger-dropdown">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
                 </button>
                 
                 <!-- Dropdown Menu -->
-                <div id="hamburger-dropdown" class="dropdown-menu" role="menu">
-                    <a href="/" class="dropdown-item" role="menuitem" tabindex="-1">
-                        <i class="fas fa-home" aria-hidden="true"></i>
+                <div id="hamburger-dropdown" class="dropdown-menu" role="menu" aria-hidden="true">
+                    <a href="/" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-home"></i>
                         <span>Home</span>
                     </a>
-                    <a href="/about" class="dropdown-item" role="menuitem" tabindex="-1">
-                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                        <span>About</span>
+                    <a href="/dashboard" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
                     </a>
-                    <a href="/contact" class="dropdown-item" role="menuitem" tabindex="-1">
-                        <i class="fas fa-envelope" aria-hidden="true"></i>
+                    <a href="/step3" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Previous Step</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        <span>Print Results</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="if(confirm('Are you sure you want to reset all data?')) { sessionStorage.clear(); location.reload(); }">
+                        <i class="fas fa-redo-alt"></i>
+                        <span>Reset</span>
+                    </a>
+                </div>
+            </div>
+        </div>
                         <span>Contact</span>
                     </a>
                     <a href="/help" class="dropdown-item" role="menuitem" tabindex="-1">
@@ -1629,92 +1581,6 @@
                 document.getElementById('step4Form').submit();
             }, 1000);
         }
-        
-        // ==========================================
-        // UNIFIED NAVBAR JAVASCRIPT
-        // ==========================================
-        
-        // Hamburger Menu Toggle
-        function toggleHamburgerMenu() {
-            const hamburgerButton = document.querySelector('.hamburger-menu');
-            const dropdownMenu = document.getElementById('hamburger-dropdown');
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            if (isExpanded) {
-                dropdownMenu.classList.remove('show');
-                // Set focus back to hamburger button
-                setTimeout(() => {
-                    hamburgerButton.focus();
-                }, 300);
-            } else {
-                dropdownMenu.classList.add('show');
-                // Set focus to first menu item
-                setTimeout(() => {
-                    const firstMenuItem = dropdownMenu.querySelector('.dropdown-item');
-                    if (firstMenuItem) {
-                        firstMenuItem.focus();
-                    }
-                }, 100);
-            }
-        }
-
-        // Step Navigation Function
-        function navigateToStep(stepNumber) {
-            const stepUrls = {
-                1: '/step1',
-                2: '/step2', 
-                3: '/step3',
-                4: '/step4'
-            };
-            
-            if (stepUrls[stepNumber]) {
-                window.location.href = stepUrls[stepNumber];
-            }
-        }
-
-        // Keyboard Navigation for Dropdown Menu
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownMenu = document.getElementById('hamburger-dropdown');
-            const menuItems = dropdownMenu.querySelectorAll('.dropdown-item');
-            const hamburgerButton = document.querySelector('.hamburger-menu');
-            
-            // Handle keyboard navigation within dropdown
-            menuItems.forEach((item, index) => {
-                item.addEventListener('keydown', function(e) {
-                    if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        const nextItem = menuItems[index + 1] || menuItems[0];
-                        nextItem.focus();
-                    } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        const prevItem = menuItems[index - 1] || menuItems[menuItems.length - 1];
-                        prevItem.focus();
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        toggleHamburgerMenu();
-                    }
-                });
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!hamburgerButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    if (dropdownMenu.classList.contains('show')) {
-                        toggleHamburgerMenu();
-                    }
-                }
-            });
-            
-            // Handle escape key for hamburger button
-            hamburgerButton.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && dropdownMenu.classList.contains('show')) {
-                    e.preventDefault();
-                    toggleHamburgerMenu();
-                }
-            });
-        });
     </script>
 </body>
 </html>

@@ -23,7 +23,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
+    
+    <!-- Navigation JavaScript -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
+    
+    <!-- Centralized Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}"/>
     
     <style>
         /* =================================================================
@@ -47,7 +53,7 @@
             --success-color: #28a745;
             
             /* Navbar Layout Constants */
-            --navbar-height: 80px;
+            --navbar-height: 90px;
             --navbar-padding: 24px;
             --bubble-size: 56px;
             --bubble-gap: 16px;
@@ -1239,11 +1245,12 @@
 
         /* Step-specific styles */
         .step-container {
-            min-height: 100vh;
+            min-height: calc(100vh - var(--navbar-height));
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem 0;
+            margin-top: 20px; /* Additional spacing below navbar */
         }
         
         .step-content {
@@ -1310,13 +1317,28 @@
         }
         
         .btn-step.btn-next {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent));
-            color: white;
+            background: #4A90E2 !important;
+            color: white !important;
         }
         
-        .btn-step.btn-next:hover {
+        .btn-step.btn-next:hover:not(:disabled) {
+            background: #357abd !important;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5);
+        }
+        
+        .btn-step.btn-next:disabled {
+            background: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-step.btn-enabled,
+        .btn-step:not(:disabled) {
+            background: #4A90E2 !important;
+            color: white !important;
+            cursor: pointer;
         }
         
         .btn-step:disabled {
@@ -1350,78 +1372,20 @@
             <div class="navbar-brand-section">
                 <a class="brand-link" href="/" aria-label="GravitycARgo Home">
                     <i class="fas fa-cube brand-icon animated-cube" aria-hidden="true"></i>
-                    <span class="brand-text">GravitycARgo</span>
+                    <span class="brand-text" style="color: #ffffff !important;">GravitycARgo</span>
                 </a>
-            </div>
-            
-            <!-- Center: Step Progress Section -->
-            <div class="step-progress-section">
-                <div class="step-progress-track">
-                    <!-- Step 1 -->
-                    <div class="step-wrapper active" data-step="1">
-                        <div class="step-bubble active">
-                            <span class="step-number">1</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Transport</span>
-                            <span class="step-subtitle">Mode</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 1-2 -->
-                    <div class="step-connector" data-connector="1-2"></div>
-                    
-                    <!-- Step 2 -->
-                    <div class="step-wrapper" data-step="2">
-                        <div class="step-bubble">
-                            <span class="step-number">2</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Container</span>
-                            <span class="step-subtitle">Selection</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 2-3 -->
-                    <div class="step-connector" data-connector="2-3"></div>
-                    
-                    <!-- Step 3 -->
-                    <div class="step-wrapper" data-step="3">
-                        <div class="step-bubble">
-                            <span class="step-number">3</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">File</span>
-                            <span class="step-subtitle">Upload</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 3-4 -->
-                    <div class="step-connector" data-connector="3-4"></div>
-                    
-                    <!-- Step 4 -->
-                    <div class="step-wrapper" data-step="4">
-                        <div class="step-bubble">
-                            <span class="step-number">4</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Settings</span>
-                            <span class="step-subtitle">Review</span>
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- Right: Menu Section -->
             <div class="navbar-menu-section">
-                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" aria-label="Open navigation menu" aria-expanded="false" aria-controls="dropdownMenu">
+                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" aria-label="Open navigation menu" aria-expanded="false" aria-controls="hamburger-dropdown">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                 </button>
                 
                 <!-- Dropdown Menu -->
-                <div class="dropdown-menu" id="dropdownMenu" role="menu" aria-hidden="true">
+                <div class="dropdown-menu" id="hamburger-dropdown" role="menu" aria-hidden="true">
                     <a href="/" class="dropdown-item" role="menuitem">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
@@ -1429,6 +1393,14 @@
                     <a href="/dashboard" class="dropdown-item" role="menuitem">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        <span>Print</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="if(confirm('Are you sure you want to reset all data?')) { sessionStorage.clear(); location.reload(); }">
+                        <i class="fas fa-redo-alt"></i>
+                        <span>Reset</span>
                     </a>
                 </div>
             </div>
@@ -1638,11 +1610,13 @@
                     if (nextBtn) {
                         nextBtn.disabled = false;
                         nextBtn.classList.remove('disabled');
+                        nextBtn.classList.add('btn-enabled');
                     }
                 });
             });
         });
 
+        // Step 1 specific proceedToNext function
         function proceedToNext() {
             const transportMode = document.getElementById('transport_mode');
             
@@ -1651,48 +1625,12 @@
                 return;
             }
             
-            // Store selection in sessionStorage for persistence
-            sessionStorage.setItem('step1_transport_mode', transportMode.value);
+            // Store selection using SessionManager
+            SessionManager.setStepData(1, 'transport_mode', transportMode.value);
             
             // Submit form to next step
             document.getElementById('step1Form').submit();
         }
-        
-        // Hamburger Menu Toggle Function
-        function toggleHamburgerMenu() {
-            const hamburgerButton = document.querySelector('.hamburger-menu');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            if (isExpanded) {
-                dropdownMenu.classList.remove('show');
-                setTimeout(() => {
-                    hamburgerButton.focus();
-                }, 300);
-            } else {
-                dropdownMenu.classList.add('show');
-                setTimeout(() => {
-                    const firstMenuItem = dropdownMenu.querySelector('.dropdown-item');
-                    if (firstMenuItem) {
-                        firstMenuItem.focus();
-                    }
-                }, 100);
-            }
-        }
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            const hamburgerButton = document.querySelector('.hamburger-menu');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            
-            if (!hamburgerButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                if (dropdownMenu.classList.contains('show')) {
-                    toggleHamburgerMenu();
-                }
-            }
-        });
     </script>
 </body>
 </html>

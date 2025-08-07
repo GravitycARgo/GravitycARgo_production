@@ -3,8 +3,9 @@ Alternative entry point for the container packing application
 This module uses the new optigenix_module structure while maintaining
 the same functionality as the original app.py
 """
-from flask import Flask, jsonify, request, current_app, render_template
+from flask import Flask, jsonify, request, current_app, render_template, session
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import os
 import sys
@@ -21,10 +22,11 @@ import socket
 import glob
 import shutil
 import requests
+import pandas as pd
+import numpy as np
 from logging.handlers import RotatingFileHandler
 from flask_socketio import SocketIO, emit
 import multiprocessing
-import numpy as np
 from pathlib import Path
 from routing.Server import app as route_temp_app
 
@@ -44,6 +46,9 @@ except ImportError:
 
 # Import configuration from config.py
 from config import UPLOAD_FOLDER, PLANS_FOLDER, MAX_CONTENT_LENGTH, SECRET_KEY
+
+# Import utility functions
+from modules.utils import allowed_file
 
 # Configuration constants - moved from hardcoded values
 class AppConfig:
@@ -951,6 +956,150 @@ def create_app():
     app.route('/step2', methods=['GET', 'POST'])(step2_handler)
     app.route('/step3', methods=['GET', 'POST'])(step3_handler)
     app.route('/step4', methods=['GET', 'POST'])(step4_handler)
+    
+    # Enhanced file upload routes
+    @app.route('/api/upload/preview', methods=['POST'])
+    def upload_preview():
+        """Enhanced file upload with preview functionality"""
+        try:
+            if 'file' not in request.files:
+                return jsonify({'success': False, 'error': 'No file provided'})
+            
+            file = request.files['file']
+            if not file or not file.filename:
+                return jsonify({'success': False, 'error': 'No file selected'})
+            
+            if not allowed_file(file.filename):
+                return jsonify({'success': False, 'error': 'Invalid file type. Please upload CSV or Excel files only.'})
+            
+            # Save file temporarily
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            # Process file based on type
+            file_ext = filename.rsplit('.', 1)[1].lower()
+            
+            try:
+                if file_ext == 'csv':
+                    # Try different encodings for CSV
+                    df = None
+                    for encoding in ['utf-8', 'latin-1', 'iso-8859-1']:
+                        try:
+                            df = pd.read_csv(filepath, encoding=encoding, nrows=100)
+                            break
+                        except UnicodeDecodeError:
+                            continue
+                    
+                    if df is None:
+                        return jsonify({'success': False, 'error': 'Could not decode CSV file'})
+                        
+                elif file_ext in ['xlsx', 'xls']:
+                    df = pd.read_excel(filepath, nrows=100)
+                else:
+                    return jsonify({'success': False, 'error': 'Unsupported file format'})
+                
+                # Generate preview data
+                preview_data = {
+                    'success': True,
+                    'filename': filename,
+                    'file_size': os.path.getsize(filepath),
+                    'columns': df.columns.tolist(),
+                    'total_rows': len(df),
+                    'preview_rows': df.head(10).to_dict('records'),
+                    'column_count': len(df.columns),
+                    'has_required_columns': any(col.lower() in ['length', 'width', 'height', 'weight'] for col in df.columns),
+                    'column_analysis': {
+                        'numeric_columns': df.select_dtypes(include=[np.number]).columns.tolist(),
+                        'text_columns': df.select_dtypes(include=['object']).columns.tolist(),
+                        'missing_data': df.isnull().sum().to_dict()
+                    }
+                }
+                
+                # Store in session for later use
+                session['step_data'] = session.get('step_data', {})
+                session['step_data']['file_path'] = filepath
+                session['step_data']['file_name'] = filename
+                session['step_data']['csv_preview'] = preview_data['preview_rows']
+                session['step_data']['csv_columns'] = preview_data['columns']
+                session['step_data']['total_rows'] = preview_data['total_rows']
+                session.permanent = True
+                
+                return jsonify(preview_data)
+                
+            except Exception as e:
+                return jsonify({'success': False, 'error': f'Error processing file: {str(e)}'})
+                
+        except Exception as e:
+            app.logger.error(f"Upload preview error: {str(e)}")
+            return jsonify({'success': False, 'error': f'Upload failed: {str(e)}'})
+    
+    @app.route('/api/upload/validate', methods=['POST'])
+    def upload_validate():
+        """Validate uploaded file structure"""
+        try:
+            data = request.get_json()
+            file_path = data.get('file_path')
+            
+            if not file_path or not os.path.exists(file_path):
+                return jsonify({'valid': False, 'errors': ['File not found']})
+            
+            # Load and validate file
+            file_ext = os.path.splitext(file_path)[1].lower()
+            
+            if file_ext == '.csv':
+                df = pd.read_csv(file_path, nrows=1000)  # Sample for validation
+            elif file_ext in ['.xlsx', '.xls']:
+                df = pd.read_excel(file_path, nrows=1000)
+            else:
+                return jsonify({'valid': False, 'errors': ['Unsupported file format']})
+            
+            errors = []
+            warnings = []
+            
+            # Check required columns
+            required_columns = ['length', 'width', 'height', 'weight']
+            missing_columns = []
+            
+            for col in required_columns:
+                if not any(existing_col.lower().replace('_', '').replace(' ', '') == col for existing_col in df.columns):
+                    missing_columns.append(col)
+            
+            if missing_columns:
+                errors.append(f"Missing required columns: {', '.join(missing_columns)}")
+            
+            # Check data quality
+            if df.empty:
+                errors.append("File is empty")
+            elif len(df) < 1:
+                warnings.append("File contains very few items")
+            
+            # Check for numeric data in dimension columns
+            numeric_issues = []
+            for col in df.columns:
+                col_lower = col.lower()
+                if any(req in col_lower for req in ['length', 'width', 'height', 'weight']):
+                    if not pd.api.types.is_numeric_dtype(df[col]):
+                        numeric_issues.append(col)
+            
+            if numeric_issues:
+                warnings.append(f"Non-numeric data in dimension columns: {', '.join(numeric_issues)}")
+            
+            return jsonify({
+                'valid': len(errors) == 0,
+                'errors': errors,
+                'warnings': warnings,
+                'row_count': len(df),
+                'column_count': len(df.columns),
+                'suggestions': [
+                    "Ensure all dimension columns contain numeric values",
+                    "Use standard column names: length, width, height, weight",
+                    "Remove any empty rows from your file"
+                ]
+            })
+            
+        except Exception as e:
+            return jsonify({'valid': False, 'errors': [f'Validation error: {str(e)}']})
     
     # Global error handler to catch filename errors
     @app.errorhandler(Exception)

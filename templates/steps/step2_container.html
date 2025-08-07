@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-index.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation-improvements.css') }}"/>
     
+    <!-- Navigation JavaScript -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}" defer></script>
+    
+    <!-- Centralized Navbar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}"/>
+    
     <style>
         /* =================================================================
            UNIFIED NAVBAR SYSTEM - COMPLETE IMPLEMENTATION
@@ -653,11 +659,12 @@
 
         /* Step-specific styles */
         .step-container {
-            min-height: 100vh;
+            min-height: calc(100vh - var(--navbar-height));
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem 0;
+            margin-top: 20px; /* Additional spacing below navbar */
         }
         
         .step-content {
@@ -698,8 +705,12 @@
         .navigation-buttons {
             position: fixed;
             bottom: 2rem;
-            right: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
         }
         
         .btn-step {
@@ -720,8 +731,33 @@
         }
         
         .btn-step.btn-next {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent));
-            color: white;
+            background: #4A90E2 !important;
+            color: white !important;
+        }
+        
+        .btn-step.btn-next:hover:not(:disabled) {
+            background: #357abd !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.5);
+        }
+        
+        .btn-step.btn-next:disabled {
+            background: #cccccc !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-step.btn-prev {
+            background: #ffffff !important;
+            color: #4A90E2 !important;
+            border: 2px solid #4A90E2 !important;
+        }
+        
+        .btn-step.btn-prev:hover {
+            background: #4A90E2 !important;
+            color: white !important;
+            transform: translateY(-2px);
         }
         
         .btn-step:hover {
@@ -1007,7 +1043,7 @@
     <!-- Unified Navigation Bar -->
     <nav class="unified-navbar" id="unifiedNavbar" role="navigation" aria-label="Main navigation">
         <div class="navbar-container">
-            <!-- Left: Branding Section -->
+            <!-- Left: Brand Section -->
             <div class="navbar-brand-section">
                 <a class="brand-link" href="/" aria-label="GravitycARgo Home">
                     <i class="fas fa-cube brand-icon animated-cube" aria-hidden="true"></i>
@@ -1015,74 +1051,17 @@
                 </a>
             </div>
             
-            <!-- Center: Step Progress Section -->
-            <div class="step-progress-section">
-                <div class="step-progress-track">
-                    <!-- Step 1 -->
-                    <div class="step-wrapper completed" data-step="1">
-                        <div class="step-bubble completed">
-                            <i class="fas fa-check step-check-icon" aria-hidden="true"></i>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Transport</span>
-                            <span class="step-subtitle">Mode</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 1-2 -->
-                    <div class="step-connector active" data-connector="1-2"></div>
-                    
-                    <!-- Step 2 -->
-                    <div class="step-wrapper active" data-step="2">
-                        <div class="step-bubble active">
-                            <span class="step-number">2</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Container</span>
-                            <span class="step-subtitle">Selection</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 2-3 -->
-                    <div class="step-connector" data-connector="2-3"></div>
-                    
-                    <!-- Step 3 -->
-                    <div class="step-wrapper" data-step="3">
-                        <div class="step-bubble">
-                            <span class="step-number">3</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">File</span>
-                            <span class="step-subtitle">Upload</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Connector 3-4 -->
-                    <div class="step-connector" data-connector="3-4"></div>
-                    
-                    <!-- Step 4 -->
-                    <div class="step-wrapper" data-step="4">
-                        <div class="step-bubble">
-                            <span class="step-number">4</span>
-                        </div>
-                        <div class="step-label">
-                            <span class="step-title">Settings</span>
-                            <span class="step-subtitle">Review</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Right: Menu Section -->
             <div class="navbar-menu-section">
-                <button class="hamburger-menu" id="hamburgerMenu" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="dropdownMenu">
+                <button class="hamburger-menu" id="hamburgerMenu" type="button" onclick="toggleHamburgerMenu()" 
+                        aria-label="Open navigation menu" aria-expanded="false" aria-controls="hamburger-dropdown">
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                     <span class="hamburger-line"></span>
                 </button>
                 
                 <!-- Dropdown Menu -->
-                <div class="dropdown-menu" id="dropdownMenu" role="menu" aria-hidden="true">
+                <div id="hamburger-dropdown" class="dropdown-menu" role="menu" aria-hidden="true">
                     <a href="/" class="dropdown-item" role="menuitem">
                         <i class="fas fa-home"></i>
                         <span>Home</span>
@@ -1091,25 +1070,18 @@
                         <i class="fas fa-chart-line"></i>
                         <span>Dashboard</span>
                     </a>
+                    <a href="/step1" class="dropdown-item" role="menuitem">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Previous Step</span>
+                    </a>
+                    <a href="#" class="dropdown-item" role="menuitem" onclick="if(confirm('Are you sure you want to reset all data?')) { sessionStorage.clear(); location.reload(); }">
+                        <i class="fas fa-redo-alt"></i>
+                        <span>Reset</span>
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
-
-    <!-- Navigation Buttons - Below Navbar -->
-    <div class="navigation-buttons-container" id="navigationControls">
-        <div class="nav-buttons-wrapper">
-            <button type="button" class="nav-btn nav-btn-previous" onclick="goBack()">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                <span>Previous</span>
-            </button>
-            
-            <button type="button" class="nav-btn nav-btn-next" id="nextBtn" disabled>
-                <span>Next Step</span>
-                <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </button>
-        </div>
-    </div>
 
     <!-- Main Content -->
     <div class="step-container">
@@ -1403,6 +1375,7 @@
             window.location.href = '/step1';
         }
 
+        // Step 2 specific proceedToNext function
         function proceedToNext() {
             const transportMode = document.getElementById('transport_mode');
             const containerType = document.getElementById('container_type');
@@ -1423,10 +1396,10 @@
                     return;
                 }
                 
-                // Store custom dimensions
-                sessionStorage.setItem('step2_length', length.value);
-                sessionStorage.setItem('step2_width', width.value);
-                sessionStorage.setItem('step2_height', height.value);
+                // Store custom dimensions using SessionManager
+                SessionManager.setStepData(2, 'length', length.value);
+                SessionManager.setStepData(2, 'width', width.value);
+                SessionManager.setStepData(2, 'height', height.value);
             } else {
                 // Validation for predefined containers
                 if (!containerType || !containerType.value) {
@@ -1434,12 +1407,12 @@
                     return;
                 }
                 
-                // Store container selection
-                sessionStorage.setItem('step2_container_type', containerType.value);
+                // Store container selection using SessionManager
+                SessionManager.setStepData(2, 'container_type', containerType.value);
             }
             
-            // Store transport mode for next step
-            sessionStorage.setItem('step2_transport_mode', transportMode.value);
+            // Store transport mode using SessionManager
+            SessionManager.setStepData(2, 'transport_mode', transportMode.value);
             
             // Submit form to next step
             document.getElementById('step2Form').submit();

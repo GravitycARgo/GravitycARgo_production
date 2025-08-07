@@ -1,0 +1,1097 @@
+/**
+ * UNIFIED NAVBAR SYSTEM - CENTRALIZED CSS
+ * ================================================================= 
+ * This file provides consistent navbar styling across all step pages
+ * to prevent overlapping and ensure static navbar positioning.
+ * ================================================================= 
+ */
+
+:root {
+    /* Global Color Variables */
+    --primary-color: #4a90ff;
+    --primary-hover: #357fff;
+    --secondary-color: #6366f1;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --dark-bg: #1a1a2e;
+    --light-bg: #f8f9fa;
+    
+    /* Navbar Theme Colors */
+    --navbar-bg: #f8f9fa;
+    --navbar-border: rgba(0, 0, 0, 0.1);
+    --navbar-text: #1a1a2e;
+    --navbar-text-hover: var(--primary-color);
+    --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    
+    /* Navbar Layout Constants - STANDARDIZED */
+    --navbar-height: 90px;
+    --navbar-padding: 24px;
+    --navbar-z-index: 1000;
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --navbar-bg: #1a1a2e;
+        --navbar-border: rgba(255, 255, 255, 0.15);
+        --navbar-text: #ffffff;
+        --navbar-text-hover: var(--primary-color);
+        --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Force dark theme */
+[data-theme="dark"] {
+    --navbar-bg: #1a1a2e;
+    --navbar-border: rgba(255, 255, 255, 0.15);
+    --navbar-text: #ffffff;
+    --navbar-text-hover: var(--primary-color);
+    --navbar-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * UNIFIED NAVBAR CONTAINER
+ * ================================================================= 
+ */
+
+.unified-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--navbar-z-index);
+    background: var(--navbar-bg);
+    border-bottom: 2px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--navbar-padding);
+    height: 100%;
+    gap: 24px;
+}
+
+/**
+ * NAVBAR BRAND SECTION
+ * ================================================================= 
+ */
+
+.navbar-brand-section {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 16px;
+}
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-logo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(74, 144, 255, 0.3);
+}
+
+.brand-text {
+    color: #ffffff !important;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.brand-text:hover {
+    color: #003366 !important;
+}
+
+/**
+ * STEP PROGRESS SECTION - STUNNING REDESIGN 🚀
+ * ================================================================= 
+ */
+
+.step-progress-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px;
+}
+
+.step-progress-track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.12) 0%, 
+        rgba(255, 255, 255, 0.08) 100%);
+    border-radius: 50px;
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    animation: breathe 4s ease-in-out infinite;
+}
+
+/* Magical floating particles inside track */
+.step-progress-track::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(116, 185, 255, 0.15) 25%,
+        rgba(74, 144, 255, 0.2) 50%,
+        rgba(116, 185, 255, 0.15) 75%,
+        transparent 100%);
+    animation: magicalShimmer 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    50% { 
+        transform: scale(1.02); 
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes magicalShimmer {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: -100%; }
+}
+
+/* STEP WRAPPER - PREMIUM GLASS MORPHISM */
+.step-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    border-radius: 40px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    opacity: 0.5;
+    transform: scale(0.92);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.step-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    transition: left 0.6s ease;
+}
+
+.step-wrapper:hover {
+    opacity: 0.8;
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.step-wrapper:hover::before {
+    left: 100%;
+}
+
+.step-wrapper.active {
+    opacity: 1;
+    transform: scale(1);
+    background: linear-gradient(135deg, 
+        rgba(74, 144, 255, 0.25) 0%,
+        rgba(99, 102, 241, 0.18) 50%,
+        rgba(139, 92, 246, 0.15) 100%);
+    border: 1px solid rgba(74, 144, 255, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(74, 144, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 0 1px rgba(74, 144, 255, 0.2);
+}
+
+.step-wrapper.completed {
+    opacity: 1;
+    transform: scale(1);
+    background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.25) 0%,
+        rgba(34, 197, 94, 0.18) 50%,
+        rgba(52, 211, 153, 0.15) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 
+        0 8px 24px rgba(16, 185, 129, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* STEP BUBBLE - NEXT-LEVEL DESIGN */
+.step-bubble {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.08) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.step-wrapper.active .step-bubble {
+    background: linear-gradient(135deg, #4A90FF 0%, #6366F1 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 0 30px rgba(74, 144, 255, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 4px 20px rgba(74, 144, 255, 0.3);
+    animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+.step-wrapper.completed .step-bubble {
+    background: linear-gradient(135deg, #10B981 0%, #22C55E 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 0 25px rgba(16, 185, 129, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 4px 16px rgba(16, 185, 129, 0.25);
+    animation: completedGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+            0 0 30px rgba(74, 144, 255, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 4px 20px rgba(74, 144, 255, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 
+            0 0 40px rgba(74, 144, 255, 0.8),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            0 6px 24px rgba(74, 144, 255, 0.4);
+    }
+}
+
+@keyframes completedGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 25px rgba(16, 185, 129, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 4px 16px rgba(16, 185, 129, 0.25);
+    }
+    50% {
+        box-shadow: 
+            0 0 35px rgba(16, 185, 129, 0.7),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            0 6px 20px rgba(16, 185, 129, 0.35);
+    }
+}
+
+/* STEP NUMBERS & ICONS - REFINED */
+.step-number {
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.step-wrapper.active .step-number,
+.step-wrapper.completed .step-number {
+    color: #ffffff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.step-check-icon {
+    font-size: 14px;
+    color: #ffffff;
+    display: none;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.step-wrapper.completed .step-number {
+    display: none;
+}
+
+.step-wrapper.completed .step-check-icon {
+    display: block;
+    animation: checkPop 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkPop {
+    0% { 
+        transform: scale(0) rotate(-180deg); 
+        opacity: 0;
+    }
+    60% { 
+        transform: scale(1.4) rotate(10deg); 
+        opacity: 1;
+    }
+    100% { 
+        transform: scale(1) rotate(0deg); 
+        opacity: 1;
+    }
+}
+
+/* STEP LABELS - ELEGANT TYPOGRAPHY */
+.step-label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.step-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.3px;
+}
+
+.step-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 1px 0 0 0;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.step-wrapper.active .step-title {
+    color: #ffffff;
+    font-weight: 800;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.step-wrapper.active .step-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.step-wrapper.completed .step-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.step-wrapper.completed .step-subtitle {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* STEP CONNECTORS - FLOWING MAGIC */
+.step-connector {
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.1) 100%);
+    position: relative;
+    margin: 0 8px;
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.step-connector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.6) 50%, 
+        transparent 100%);
+    transition: all 0.8s ease;
+}
+
+.step-connector.completed {
+    background: linear-gradient(90deg, 
+        #10B981 0%, 
+        #22C55E 50%, 
+        #34D399 100%);
+    box-shadow: 
+        0 0 15px rgba(16, 185, 129, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: completedFlow 3s ease-in-out infinite;
+}
+
+.step-connector.active {
+    background: linear-gradient(90deg, 
+        #4A90FF 0%, 
+        #6366F1 50%, 
+        #8B5CF6 100%);
+    box-shadow: 
+        0 0 20px rgba(74, 144, 255, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: progressFlow 2.5s ease-in-out infinite;
+}
+
+.step-connector.active::before {
+    animation: flowingEnergy 2s ease-in-out infinite;
+}
+
+@keyframes progressFlow {
+    0%, 100% {
+        background: linear-gradient(90deg, 
+            #4A90FF 0%, 
+            #6366F1 50%, 
+            #8B5CF6 100%);
+    }
+    50% {
+        background: linear-gradient(90deg, 
+            #6366F1 0%, 
+            #8B5CF6 50%, 
+            #4A90FF 100%);
+    }
+}
+
+@keyframes completedFlow {
+    0%, 100% {
+        background: linear-gradient(90deg, 
+            #10B981 0%, 
+            #22C55E 50%, 
+            #34D399 100%);
+    }
+    50% {
+        background: linear-gradient(90deg, 
+            #22C55E 0%, 
+            #34D399 50%, 
+            #10B981 100%);
+    }
+}
+
+@keyframes flowingEnergy {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/**
+ * RESPONSIVE DESIGN - MOBILE OPTIMIZATION 📱
+ * ================================================================= 
+ */
+
+/* Tablet styles */
+@media (max-width: 768px) {
+    .step-progress-track {
+        gap: 0;
+        padding: 12px 16px;
+        margin: 0 10px;
+    }
+    
+    .step-wrapper {
+        gap: 10px;
+        padding: 8px 14px;
+    }
+    
+    .step-bubble {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .step-number {
+        font-size: 14px;
+    }
+    
+    .step-check-icon {
+        font-size: 12px;
+    }
+    
+    .step-title {
+        font-size: 13px;
+    }
+    
+    .step-subtitle {
+        font-size: 10px;
+    }
+    
+    .step-connector {
+        width: 35px;
+        margin: 0 6px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+    .step-progress-track {
+        gap: 0;
+        padding: 8px 12px;
+        margin: 0 5px;
+    }
+    
+    .step-wrapper {
+        gap: 8px;
+        padding: 6px 10px;
+    }
+    
+    .step-bubble {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .step-number {
+        font-size: 12px;
+    }
+    
+    .step-check-icon {
+        font-size: 10px;
+    }
+    
+    .step-title {
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .step-subtitle {
+        font-size: 9px;
+    }
+    
+    .step-connector {
+        width: 25px;
+        height: 2px;
+        margin: 0 4px;
+    }
+}
+
+/* Shake animation for disabled steps */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* Enhanced hover states */
+.step-wrapper:not(.active):hover .step-title {
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.step-wrapper:not(.active):hover .step-subtitle {
+    opacity: 1;
+}
+
+/* Smooth transitions for all interactive elements */
+.step-title,
+.step-subtitle,
+.step-bubble {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced focus states */
+.step-wrapper:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 3px;
+    border-radius: 20px;
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Glassmorphism effect for progress track */
+.step-progress-track {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/**
+ * HAMBURGER MENU SECTION - ENHANCED VISIBILITY
+ * ================================================================= 
+ */
+
+.navbar-menu-section {
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-width: 60px;
+    justify-content: flex-end;
+}
+
+.hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 52px;
+    height: 52px;
+    background: rgba(74, 144, 255, 0.1);
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    gap: 4px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(74, 144, 255, 0.2);
+}
+
+.hamburger-menu:hover {
+    background: rgba(74, 144, 255, 0.2);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(74, 144, 255, 0.3);
+    border-color: var(--primary-hover);
+}
+
+.hamburger-menu:focus {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.hamburger-line {
+    width: 22px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-menu:hover .hamburger-line {
+    background: var(--primary-hover);
+}
+
+.hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(4px, 4px);
+}
+
+.hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(2) {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.hamburger-menu[aria-expanded="true"] .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/**
+ * DROPDOWN MENU - ENHANCED VISIBILITY
+ * ================================================================= 
+ */
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--navbar-bg);
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(74, 144, 255, 0.1);
+    backdrop-filter: blur(20px);
+    min-width: 220px;
+    padding: 16px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+    margin-top: 8px;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    color: var(--navbar-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    gap: 16px;
+    font-weight: 500;
+    font-size: 1rem;
+    border-left: 4px solid transparent;
+}
+
+.dropdown-item:hover {
+    background: linear-gradient(90deg, rgba(74, 144, 255, 0.1) 0%, rgba(74, 144, 255, 0.05) 100%);
+    color: var(--primary-color);
+    transform: translateX(6px);
+    border-left-color: var(--primary-color);
+    text-decoration: none;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    color: var(--primary-color);
+}
+
+.dropdown-item:hover i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/**
+ * BODY SPACING TO PREVENT NAVBAR OVERLAP
+ * ================================================================= 
+ */
+
+body {
+    padding-top: var(--navbar-height);
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.step-container {
+    min-height: calc(100vh - var(--navbar-height));
+    margin-top: 20px; /* Additional spacing below navbar */
+    padding: 2rem 0;
+}
+
+/**
+ * RESPONSIVE DESIGN - ENHANCED
+ * ================================================================= 
+ */
+
+@media (max-width: 768px) {
+    :root {
+        --navbar-height: 100px;
+        --navbar-padding: 16px;
+    }
+    
+    .navbar-container {
+        gap: 8px;
+    }
+    
+    .step-progress-section {
+        max-width: 100%;
+    }
+    
+    .step-progress-track {
+        gap: clamp(4px, 1.5vw, 12px);
+        padding: 8px 12px;
+        border-radius: 16px;
+    }
+    
+    .step-wrapper {
+        min-width: clamp(60px, 12vw, 75px);
+        padding: 6px 4px;
+    }
+    
+    .step-bubble {
+        width: clamp(40px, 8vw, 48px);
+        height: clamp(40px, 8vw, 48px);
+        margin-bottom: 6px;
+    }
+    
+    .step-connector {
+        width: clamp(25px, 4vw, 45px);
+        margin: 0 2px;
+    }
+    
+    .step-label {
+        min-height: 32px;
+        max-width: 70px;
+    }
+    
+    .brand-text {
+        font-size: 20px;
+    }
+    
+    .dropdown-menu {
+        min-width: 180px;
+        right: -10px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --navbar-height: 85px;
+        --navbar-padding: 12px;
+    }
+    
+    .step-progress-track {
+        gap: clamp(2px, 1vw, 8px);
+        padding: 6px 8px;
+    }
+    
+    .step-wrapper {
+        min-width: clamp(50px, 15vw, 65px);
+        padding: 4px 2px;
+    }
+    
+    .step-bubble {
+        width: clamp(36px, 10vw, 44px);
+        height: clamp(36px, 10vw, 44px);
+        margin-bottom: 4px;
+    }
+    
+    .step-connector {
+        width: clamp(20px, 3vw, 35px);
+        height: 2px;
+        margin: 0 1px;
+    }
+    
+    .step-label {
+        min-height: 28px;
+        max-width: 60px;
+        gap: 1px;
+    }
+    
+    .brand-logo {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .brand-text {
+        font-size: 18px;
+    }
+    
+    /* Hide subtitles on very small screens */
+    .step-subtitle {
+        display: none;
+    }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1400px) {
+    .step-progress-track {
+        gap: clamp(20px, 2.5vw, 32px);
+        padding: 16px 24px;
+    }
+    
+    .step-wrapper {
+        min-width: clamp(90px, 6vw, 110px);
+        padding: 12px 8px;
+    }
+    
+    .step-connector {
+        width: clamp(70px, 8vw, 100px);
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .step-bubble {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .step-wrapper.active .step-bubble {
+        box-shadow: 0 0 30px rgba(74, 144, 255, 0.6), 0 8px 25px rgba(74, 144, 255, 0.4);
+    }
+}
+
+/**
+ * ACCESSIBILITY IMPROVEMENTS - ENHANCED
+ * ================================================================= 
+ */
+
+.hamburger-menu:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(74, 144, 255, 0.2);
+}
+
+.dropdown-item:focus {
+    background: rgba(74, 144, 255, 0.1);
+    color: var(--navbar-text-hover);
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
+.step-wrapper:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 16px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .unified-navbar,
+    .hamburger-menu,
+    .dropdown-menu,
+    .dropdown-item,
+    .brand-logo,
+    .step-wrapper,
+    .step-bubble,
+    .step-connector {
+        transition: none;
+        animation: none;
+    }
+    
+    .step-wrapper.active .step-bubble {
+        animation: none;
+    }
+    
+    .step-connector.active {
+        animation: none;
+    }
+    
+    .step-progress-track::before {
+        animation: none;
+    }
+}
+
+/* Step Progress Indicators - Enhanced */
+.step-progress {
+    position: relative;
+    margin: 2rem 0;
+    padding: 0;
+    text-align: center;
+}
+
+.step-progress-item {
+    display: inline-block;
+    position: relative;
+    padding: 0.75rem 1.5rem;
+    margin: 0 0.25rem;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px solid #dee2e6;
+    border-radius: 25px;
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    white-space: nowrap;
+}
+
+.step-progress-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: #007bff;
+    border-color: #007bff;
+    text-decoration: none;
+}
+
+.step-progress-item.active {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    transform: scale(1.05);
+}
+
+.step-progress-item.completed {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    border-color: #28a745;
+    color: white;
+    box-shadow: 0 3px 8px rgba(40,167,69,0.25);
+}
+
+.step-progress-item.completed::before {
+    content: '✓ ';
+    font-weight: bold;
+}
+
+.step-progress-item.disabled {
+    background: #f1f3f4;
+    border-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+.step-progress-item.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    color: #adb5bd;
+    border-color: #e9ecef;
+}
+
+/* Connection lines between steps */
+.step-progress-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    width: 20px;
+    height: 2px;
+    background: #dee2e6;
+    transform: translateY(-50%);
+    z-index: -1;
+}
+
+.step-progress-item.completed:not(:last-child)::after {
+    background: #28a745;
+}
+
+/* Responsive design for progress indicators */
+@media (max-width: 768px) {
+    .step-progress {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    
+    .step-progress-item {
+        width: 90%;
+        text-align: center;
+        margin: 0;
+        max-width: 300px;
+    }
+    
+    .step-progress-item:not(:last-child)::after {
+        display: none;
+    }
+}
